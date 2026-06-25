@@ -1,33 +1,24 @@
-//Sidebar.js from hooks
+// hooks/useSidebar.js
+
 import { useState, useRef } from 'react'
 import { Animated } from 'react-native'
+import { SIDEBAR_WIDTH } from '../constants'
 
 export const useSidebar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const slideAnim = useRef(new Animated.Value(-250)).current
+  const slideAnim = useRef(new Animated.Value(-SIDEBAR_WIDTH)).current
 
-  const toggleSidebar = () => {
+  const animate = (toValue, open) => {
     Animated.timing(slideAnim, {
-      toValue: sidebarOpen ? -250 : 0,
+      toValue,
       duration: 300,
       useNativeDriver: true,
     }).start()
-    setSidebarOpen(!sidebarOpen)
+    setSidebarOpen(open)
   }
 
-  const closeSidebar = () => {
-    Animated.timing(slideAnim, {
-      toValue: -250,
-      duration: 300,
-      useNativeDriver: true,
-    }).start()
-    setSidebarOpen(false)
-  }
+  const toggleSidebar = () => animate(sidebarOpen ? -SIDEBAR_WIDTH : 0, !sidebarOpen)
+  const closeSidebar = () => animate(-SIDEBAR_WIDTH, false)
 
-  return {
-    sidebarOpen,
-    slideAnim,
-    toggleSidebar,
-    closeSidebar
-  }
+  return { sidebarOpen, slideAnim, toggleSidebar, closeSidebar }
 }

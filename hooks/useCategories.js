@@ -1,33 +1,27 @@
-//useCategories.js from hooks
+// hooks/useCategories.js
+
 import { useState, useEffect } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { generateId } from '../utils/dataManager'
-
-const STORAGE_KEY = 'maomao_notes_data'
+import { STORAGE_KEY } from '../constants'
 
 export const useCategories = () => {
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Load data from AsyncStorage on app start
-  useEffect(() => {
-    loadData()
-  }, [])
+  useEffect(() => { loadData() }, [])
 
-  // Save data to AsyncStorage whenever categories change
   useEffect(() => {
-    if (!isLoading) {
-      saveData()
-    }
+    if (!isLoading) saveData()
   }, [categories, isLoading])
 
   const loadData = async () => {
     try {
-      const savedData = await AsyncStorage.getItem(STORAGE_KEY)
-      if (savedData) {
-        const parsedData = JSON.parse(savedData)
-        setCategories(parsedData.categories || [])
+      const saved = await AsyncStorage.getItem(STORAGE_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        setCategories(parsed.categories || [])
       }
     } catch (error) {
       console.error('Error loading data:', error)
@@ -38,156 +32,108 @@ export const useCategories = () => {
 
   const saveData = async () => {
     try {
-      const dataToSave = {
-        categories,
-        savedAt: new Date().toISOString()
-      }
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave))
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ categories, savedAt: new Date().toISOString() })
+      )
     } catch (error) {
       console.error('Error saving data:', error)
     }
   }
 
+  // Keeps selectedCategory in sync after any categories update
+  const updateCategories = (updated) => {
+    setCategories(updated)
+    if (selectedCategory) {
+      const stillSelected = updated.find((c) => c.id === selectedCategory.id)
+      setSelectedCategory(stillSelected || null)
+    }
+  }
+
+  const now = () => new Date().toISOString()
+
+  // ─── category operations ──────────────────────────────────────────────────
+
   const addCategory = (name) => {
-    if (name.trim() === "") return;
-    const newCategory = {
-      id: generateId(),
-      name,
-      items: [],
-      sortOrder: 'alphabetical',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    setCategories([newCategory, ...categories]); // prepend at top
-  };
+    if (!name.trim()) return
+    setCategories((prev) => [
+      {
+        id: generateId(),
+        name: name.trim(),
+        items: [],
+        sortOrder: 'alphabetical',
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      ...prev,
+    ])
+  }
 
   const renameCategory = (categoryId, newName) => {
-    if (newName.trim() === "") return;
-    
-    const updatedCategories = categories.map(cat => {
-      if (cat.id === categoryId) {
-        return {
-          ...cat,
-          name: newName.trim(),
-          updatedAt: new Date().toISOString()
-        }
-      }
-      return cat
-    })
-    
-    setCategories(updatedCategories)
-    
-    // Update selected category if it's the one being renamed
-    if (selectedCategory && selectedCategory.id === categoryId) {
-      const updatedSelected = updatedCategories.find(cat => cat.id === categoryId)
-      setSelectedCategory(updatedSelected)
-    }
+    if (!newName.trim()) return
+    updateCategories(
+      categories.map((cat) =>
+        cat.id === categoryId ? { ...cat, name: newName.trim(), updatedAt: now() } : cat
+      )
+    )
   }
 
   const deleteCategory = (id) => {
-    setCategories(categories.filter(cat => cat.id !== id))
+    setCategories((prev) => prev.filter((cat) => cat.id !== id))
     if (selectedCategory?.id === id) setSelectedCategory(null)
   }
 
+  const updateCategorySortOrder = (categoryId, sortOrder) => {
+    updateCategories(
+      categories.map((cat) =>
+        cat.id === categoryId ? { ...cat, sortOrder, updatedAt: now() } : cat
+      )
+    )
+  }
+
+  // ─── item operations ──────────────────────────────────────────────────────
+
   const addItem = (item) => {
-    if (!selectedCategory) return
-    if (item.name.trim() === "") return
-
-    const newItem = {
-      ...item,
-      id: generateId(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
-
-    const updatedCategories = categories.map(cat => {
-      if (cat.id === selectedCategory.id) {
-        return {
-          ...cat,
-          items: [...cat.items, newItem],
-          updatedAt: new Date().toISOString()
-        }
-      }
-      return cat
-    })
-
-    setCategories(updatedCategories)
-    
-    // Update selected category to reflect changes immediately
-    const updatedSelectedCategory = updatedCategories.find(cat => cat.id === selectedCategory.id)
-    setSelectedCategory(updatedSelectedCategory)
+    if (!selectedCategory || !item.name.trim()) return
+    const newItem = { ...item, id: generateId(), createdAt: now(), updatedAt: now() }
+    updateCategories(
+      categories.map((cat) =>
+        cat.id === selectedCategory.id
+          ? { ...cat, items: [...cat.items, newItem], updatedAt: now() }
+          : cat
+      )
+    )
   }
 
   const editItem = (itemId, updatedItem) => {
     if (!selectedCategory) return
-
-    const itemWithTimestamp = {
-      ...updatedItem,
-      id: itemId, // Preserve the original ID
-      updatedAt: new Date().toISOString()
-    }
-
-    const updatedCategories = categories.map(cat => {
-      if (cat.id === selectedCategory.id) {
-        const updatedItems = cat.items.map(item =>
-          item.id === itemId ? itemWithTimestamp : item
-        )
-        return { 
-          ...cat, 
-          items: updatedItems,
-          updatedAt: new Date().toISOString()
-        }
-      }
-      return cat
-    })
-
-    setCategories(updatedCategories)
-    
-    // Update selected category to reflect changes immediately
-    const updatedSelectedCategory = updatedCategories.find(cat => cat.id === selectedCategory.id)
-    setSelectedCategory(updatedSelectedCategory)
+    updateCategories(
+      categories.map((cat) =>
+        cat.id === selectedCategory.id
+          ? {
+              ...cat,
+              items: cat.items.map((item) =>
+                item.id === itemId ? { ...updatedItem, id: itemId, updatedAt: now() } : item
+              ),
+              updatedAt: now(),
+            }
+          : cat
+      )
+    )
   }
 
   const deleteItem = (itemId) => {
     if (!selectedCategory) return
-
-    const updatedCategories = categories.map(cat => {
-      if (cat.id === selectedCategory.id) {
-        return {
-          ...cat,
-          items: cat.items.filter(item => item.id !== itemId),
-          updatedAt: new Date().toISOString()
-        }
-      }
-      return cat
-    })
-
-    setCategories(updatedCategories)
-    
-    // Update selected category to reflect changes immediately
-    const updatedSelectedCategory = updatedCategories.find(cat => cat.id === selectedCategory.id)
-    setSelectedCategory(updatedSelectedCategory)
+    updateCategories(
+      categories.map((cat) =>
+        cat.id === selectedCategory.id
+          ? { ...cat, items: cat.items.filter((item) => item.id !== itemId), updatedAt: now() }
+          : cat
+      )
+    )
   }
 
-  const updateCategorySortOrder = (categoryId, sortOrder) => {
-    const updatedCategories = categories.map(cat => {
-      if (cat.id === categoryId) {
-        return {
-          ...cat,
-          sortOrder,
-          updatedAt: new Date().toISOString()
-        }
-      }
-      return cat
-    })
-    setCategories(updatedCategories)
-    
-    // Update selected category if it's the one being modified
-    if (selectedCategory && selectedCategory.id === categoryId) {
-      const updatedSelected = updatedCategories.find(cat => cat.id === categoryId)
-      setSelectedCategory(updatedSelected)
-    }
-  }
+  // ─── data management ──────────────────────────────────────────────────────
 
   const importData = (data) => {
     setCategories(data.categories)
@@ -217,6 +163,6 @@ export const useCategories = () => {
     deleteItem,
     updateCategorySortOrder,
     importData,
-    clearAllData
+    clearAllData,
   }
 }

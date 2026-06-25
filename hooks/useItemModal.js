@@ -1,48 +1,56 @@
+// hooks/useItemModal.js
+
 import { useState } from 'react'
+
+const EMPTY_FORM = { itemName: '', itemTags: '', itemDesc: '' }
 
 export const useItemModal = () => {
   const [modalVisible, setModalVisible] = useState(false)
-  const [itemName, setItemName] = useState("")
-  const [itemTags, setItemTags] = useState("")
-  const [itemDesc, setItemDesc] = useState("")
   const [editingItem, setEditingItem] = useState(null)
+  const [form, setForm] = useState(EMPTY_FORM)
+
+  const setField = (field) => (value) =>
+    setForm((prev) => ({ ...prev, [field]: value }))
 
   const openModal = () => setModalVisible(true)
-  
+
   const closeModal = () => {
     setModalVisible(false)
-    setItemName("")
-    setItemTags("")
-    setItemDesc("")
     setEditingItem(null)
+    setForm(EMPTY_FORM)
   }
 
   const openEditModal = (item) => {
-    setItemName(item.name)
-    setItemTags(item.tags.join(", "))
-    setItemDesc(item.description)
+    setForm({
+      itemName: item.name,
+      itemTags: item.tags.join(', '),
+      itemDesc: item.description,
+    })
     setEditingItem(item)
     setModalVisible(true)
   }
 
   const getItemData = () => ({
-    name: itemName,
-    tags: itemTags.split(",").map(t => t.trim()),
-    description: itemDesc
+    name: form.itemName,
+    tags: form.itemTags
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean),
+    description: form.itemDesc,
   })
 
   return {
     modalVisible,
-    itemName,
-    setItemName,
-    itemTags,
-    setItemTags,
-    itemDesc,
-    setItemDesc,
+    itemName: form.itemName,
+    setItemName: setField('itemName'),
+    itemTags: form.itemTags,
+    setItemTags: setField('itemTags'),
+    itemDesc: form.itemDesc,
+    setItemDesc: setField('itemDesc'),
     editingItem,
     openModal,
     closeModal,
     openEditModal,
-    getItemData
+    getItemData,
   }
 }

@@ -1,41 +1,20 @@
-import { useState, useEffect, useCallback } from 'react'
+// hooks/useDashboardStats.js
+
+import { useMemo, useCallback } from 'react'
 
 export const useDashboardStats = (categories) => {
-  const [stats, setStats] = useState({
-    totalItems: 0,
-    totalCategories: 0,
-  })
+  const totalItems = useMemo(
+    () => (categories || []).reduce((sum, cat) => sum + cat.items.length, 0),
+    [categories]
+  )
 
-  const calculateStats = useCallback(() => {
-    if (!categories || categories.length === 0) {
-      setStats({
-        totalItems: 0,
-        totalCategories: 0,
-      })
-      return
-    }
+  const totalCategories = categories?.length ?? 0
 
-    // Calculate total items
-    const totalItems = categories.reduce((sum, cat) => sum + cat.items.length, 0)
+  // Kept for the pull-to-refresh animation delay in Dashboard
+  const refreshStats = useCallback(
+    () => new Promise((resolve) => setTimeout(resolve, 500)),
+    []
+  )
 
-    setStats({
-      totalItems,
-      totalCategories: categories.length,
-    })
-  }, [categories])
-
-  useEffect(() => {
-    calculateStats()
-  }, [calculateStats])
-
-  const refreshStats = useCallback(async () => {
-    // Simulate a small delay for refresh animation
-    await new Promise(resolve => setTimeout(resolve, 500))
-    calculateStats()
-  }, [calculateStats])
-
-  return {
-    ...stats,
-    refreshStats
-  }
+  return { totalItems, totalCategories, refreshStats }
 }
