@@ -25,7 +25,7 @@ const TagsDropdown = ({ selectedCategory, selectedTag, onTagSelect }) => {
   }
 
   const getDisplayText = () => {
-    if (selectedTag) return `Tag: ${selectedTag}`
+    if (selectedTag) return ` ${selectedTag}`
     return 'Filter by Tag'
   }
 
@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e0e0e0",
     alignSelf: "flex-start",
+    maxWidth: 200,
   },
   activeButton: {
     backgroundColor: "#4CAF50",
@@ -127,6 +128,7 @@ const styles = StyleSheet.create({
     marginRight: 6,
     fontWeight: "500",
     fontSize: 14,
+    flexShrink: 1,
   },
   activeText: {
     color: "#fff",
@@ -169,6 +171,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 6,
     marginBottom: 4,
+    flexWrap: 'wrap',
+    minHeight: 44,
   },
   selectedTagItem: {
     backgroundColor: "#4CAF50",
@@ -178,6 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#333",
     flex: 1,
+    flexWrap: 'wrap',
   },
   selectedTagText: {
     color: "#fff",
