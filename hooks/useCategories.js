@@ -113,7 +113,9 @@ export const useCategories = () => {
           ? {
               ...cat,
               items: cat.items.map((item) =>
-                item.id === itemId ? { ...updatedItem, id: itemId, updatedAt: now() } : item
+                item.id === itemId
+                  ? { ...item, ...updatedItem, id: itemId, updatedAt: now() }
+                  : item
               ),
               updatedAt: now(),
             }
