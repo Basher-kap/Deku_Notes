@@ -208,6 +208,7 @@ const Notes = () => {
         setItemDesc={setItemDesc}
         onSave={handleSaveItem}
         editingItem={editingItem}
+        selectedCategory={selectedCategory}
       />
 
       <ExportImportModal
