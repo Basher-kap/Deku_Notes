@@ -3,6 +3,7 @@
 import { StyleSheet, View, Text, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import { useLocalSearchParams } from 'expo-router'
 import Sidebar from '../../components/Sidebar'
 import AddItemButton from '../../components/AddItemButton'
 import ItemList from '../../components/ItemList'
@@ -21,6 +22,7 @@ import { exportData, processImportData, validateImportData } from '../../utils/d
 
 const Notes = () => {
   const navigation = useNavigation()
+  const { category: categoryIdFromDashboard } = useLocalSearchParams()
 
   const {
     categories,
@@ -83,6 +85,15 @@ const Notes = () => {
     })
   }, [selectedCategory, filteredAndSortedItems.length, selectedTag])
 
+  useEffect(() => {
+    if (!categoryIdFromDashboard || isLoading || categories.length === 0) return
+    const match = categories.find((c) => c.id === categoryIdFromDashboard)
+    if (match) {
+      setSelectedCategory(match)
+      closeSidebar()
+    }
+  }, [categoryIdFromDashboard, isLoading, categories])
+  
   const handleAddCategory = () => {
     addCategory(newCategoryName)
     setNewCategoryName('')
