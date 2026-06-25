@@ -1,27 +1,25 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+// components/SortButton.jsx
+
+import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { SORT_OPTIONS, COLORS } from '../constants'
 
 const SortButton = ({ sortOrder, onSortChange, selectedCategory }) => {
   if (!selectedCategory) return null
 
-  const sortOptions = [
-    { key: 'alphabetical', label: 'A-Z', icon: 'text-outline' },
-    { key: 'date', label: 'Date', icon: 'calendar-outline' }
-  ]
+  const currentIndex = SORT_OPTIONS.findIndex((o) => o.key === sortOrder)
+  const current = SORT_OPTIONS[currentIndex] || SORT_OPTIONS[0]
 
-  const currentSort = sortOptions.find(option => option.key === sortOrder) || sortOptions[0]
-
-  const handleSortPress = () => {
-    const currentIndex = sortOptions.findIndex(option => option.key === sortOrder)
-    const nextIndex = (currentIndex + 1) % sortOptions.length
-    onSortChange(sortOptions[nextIndex].key)
+  const handlePress = () => {
+    const next = SORT_OPTIONS[(currentIndex + 1) % SORT_OPTIONS.length]
+    onSortChange(next.key)
   }
 
   return (
-    <TouchableOpacity style={styles.sortButton} onPress={handleSortPress}>
-      <Ionicons name={currentSort.icon} size={18} color="#fff" />
-      <Text style={styles.sortText}>Sort: {currentSort.label}</Text>
+    <TouchableOpacity style={styles.button} onPress={handlePress}>
+      <Ionicons name={current.icon} size={18} color="#fff" />
+      <Text style={styles.text}>Sort: {current.label}</Text>
     </TouchableOpacity>
   )
 }
@@ -29,19 +27,18 @@ const SortButton = ({ sortOrder, onSortChange, selectedCategory }) => {
 export default SortButton
 
 const styles = StyleSheet.create({
-  sortButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: 12,
-    marginBottom: 8,
-    backgroundColor: '#2196F3',
-    padding: 12,
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.secondary,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderRadius: 8,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
   },
-  sortText: {
-    color: "#fff", 
-    marginLeft: 6, 
-    fontWeight: "bold" 
+  text: {
+    color: '#fff',
+    marginLeft: 6,
+    fontWeight: 'bold',
   },
 })

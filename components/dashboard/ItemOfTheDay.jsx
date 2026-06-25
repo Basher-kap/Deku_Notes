@@ -1,60 +1,53 @@
+// components/dashboard/ItemOfTheDay.jsx
+
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ITEM_OF_DAY_KEY, COLORS } from '../../constants'
 
-const ITEM_OF_DAY_KEY = 'maomao_item_of_day'
+const getAllItems = (categories) =>
+  categories.flatMap((cat) =>
+    cat.items.map((item) => ({ ...item, categoryName: cat.name }))
+  )
+
+const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
 const ItemOfTheDay = ({ categories }) => {
   const [itemOfDay, setItemOfDay] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadItemOfDay()
-  }, [categories])
+  useEffect(() => { loadItemOfDay() }, [categories])
 
-  const getAllItems = () => {
-    const allItems = []
-    categories.forEach(category => {
-      category.items.forEach(item => {
-        allItems.push({
-          ...item,
-          categoryName: category.name
-        })
-      })
-    })
-    return allItems
+  const saveNewItemOfDay = async (allItems) => {
+    const item = pickRandom(allItems)
+    await AsyncStorage.setItem(
+      ITEM_OF_DAY_KEY,
+      JSON.stringify({ date: new Date().toDateString(), item })
+    )
+    setItemOfDay(item)
   }
 
   const loadItemOfDay = async () => {
     try {
-      const allItems = getAllItems()
+      const allItems = getAllItems(categories)
       if (allItems.length === 0) {
         setItemOfDay(null)
-        setLoading(false)
         return
       }
 
       const today = new Date().toDateString()
       const stored = await AsyncStorage.getItem(ITEM_OF_DAY_KEY)
-      
+
       if (stored) {
         const { date, item } = JSON.parse(stored)
-        if (date === today && allItems.find(i => i.id === item.id)) {
+        if (date === today && allItems.find((i) => i.id === item.id)) {
           setItemOfDay(item)
-          setLoading(false)
           return
         }
       }
 
-      // Generate new item of the day
-      const randomItem = allItems[Math.floor(Math.random() * allItems.length)]
-      await AsyncStorage.setItem(ITEM_OF_DAY_KEY, JSON.stringify({
-        date: today,
-        item: randomItem
-      }))
-      
-      setItemOfDay(randomItem)
+      await saveNewItemOfDay(allItems)
     } catch (error) {
       console.error('Error loading item of day:', error)
     } finally {
@@ -63,18 +56,10 @@ const ItemOfTheDay = ({ categories }) => {
   }
 
   const refreshItemOfDay = async () => {
-    const allItems = getAllItems()
+    const allItems = getAllItems(categories)
     if (allItems.length === 0) return
-
-    const randomItem = allItems[Math.floor(Math.random() * allItems.length)]
-    const today = new Date().toDateString()
-    
     try {
-      await AsyncStorage.setItem(ITEM_OF_DAY_KEY, JSON.stringify({
-        date: today,
-        item: randomItem
-      }))
-      setItemOfDay(randomItem)
+      await saveNewItemOfDay(allItems)
     } catch (error) {
       console.error('Error refreshing item of day:', error)
     }
@@ -109,10 +94,10 @@ const ItemOfTheDay = ({ categories }) => {
       <View style={styles.header}>
         <Text style={styles.sectionTitle}>Item of the Day</Text>
         <TouchableOpacity onPress={refreshItemOfDay} style={styles.refreshButton}>
-          <Ionicons name="refresh" size={20} color="#4CAF50" />
+          <Ionicons name="refresh" size={20} color={COLORS.primary} />
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Text style={styles.itemName}>{itemOfDay.name}</Text>
@@ -120,8 +105,8 @@ const ItemOfTheDay = ({ categories }) => {
             <Text style={styles.categoryText}>{itemOfDay.categoryName}</Text>
           </View>
         </View>
-        
-        {itemOfDay.tags && itemOfDay.tags.length > 0 && (
+
+        {itemOfDay.tags?.length > 0 && (
           <View style={styles.tagsContainer}>
             {itemOfDay.tags.slice(0, 3).map((tag, index) => (
               <View key={index} style={styles.tag}>
@@ -130,13 +115,13 @@ const ItemOfTheDay = ({ categories }) => {
             ))}
           </View>
         )}
-        
-        {itemOfDay.description && (
+
+        {!!itemOfDay.description && (
           <Text style={styles.description} numberOfLines={10}>
             {itemOfDay.description}
           </Text>
         )}
-        
+
         <View style={styles.cardFooter}>
           <Ionicons name="star" size={16} color="#FFD700" />
           <Text style={styles.footerText}>Today's featured item</Text>
@@ -151,7 +136,7 @@ export default ItemOfTheDay
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.surface,
     marginBottom: 16,
   },
   header: {
@@ -164,7 +149,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   refreshButton: {
     padding: 8,
@@ -172,11 +157,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f8f0',
   },
   card: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: COLORS.background,
     borderRadius: 12,
     padding: 16,
     borderLeftWidth: 4,
-    borderLeftColor: '#4CAF50',
+    borderLeftColor: COLORS.primary,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -187,12 +172,12 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.textPrimary,
     flex: 1,
     marginRight: 12,
   },
   categoryBadge: {
-    backgroundColor: "#2196F3",
+    backgroundColor: COLORS.secondary,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -221,7 +206,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    color: COLORS.textSecondary,
     lineHeight: 20,
     marginBottom: 12,
   },
@@ -231,12 +216,12 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 12,
-    color: '#999',
+    color: COLORS.textMuted,
     marginLeft: 4,
     fontStyle: 'italic',
   },
   emptyCard: {
-    backgroundColor: '#f8f9fa',
+    backgroundColor: COLORS.background,
     borderRadius: 12,
     padding: 32,
     alignItems: 'center',
@@ -247,18 +232,18 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#666',
+    color: COLORS.textSecondary,
     marginTop: 12,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#999',
+    color: COLORS.textMuted,
     textAlign: 'center',
     marginTop: 4,
   },
   loadingText: {
     fontSize: 16,
-    color: '#666',
+    color: COLORS.textSecondary,
     textAlign: 'center',
   },
 })
