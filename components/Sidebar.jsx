@@ -60,41 +60,28 @@ const Sidebar = ({
   return (
     <Animated.View style={[styles.sidebar, { transform: [{ translateX: slideAnim }] }]}>
       <ScrollView>
-        {/* Top Row: Backup Button */}
+        {/* Top Row: Export button + Dark mode toggle side by side */}
         <View style={styles.topRow}>
-          {/* Bottom actions */}
-            <View style={styles.sidebarBottom}>
 
-              {/* Dark mode row */}
-              <View style={[styles.themeRow, { borderColor: theme.sidebarBorder }]}>
-                <View style={styles.themeLabel}>
-                  <Ionicons
-                    name={isDark ? 'moon' : 'sunny-outline'}
-                    size={18}
-                    color={isDark ? '#aaa' : '#FFD700'}
-                  />
-                  <Text style={[styles.themeText, { color: theme.textSecondary }]}>
-                    Dark Mode
-                  </Text>
-                </View>
-                <Switch
-                  value={isDark}
-                  onValueChange={toggleTheme}
-                  trackColor={{ false: '#555', true: '#4CAF50' }}
-                  thumbColor={isDark ? '#fff' : '#f0f0f0'}
-                />
-              </View>
+          <TouchableOpacity style={styles.exportBtn} onPress={onExportImportPress}>
+            <Ionicons name="cloud-outline" size={22} color="#fff" />
+          </TouchableOpacity>
 
-              {/* Export / Import */}
-              <TouchableOpacity
-                style={[styles.exportBtn, { borderColor: theme.sidebarBorder }]}
-                onPress={onExportImportPress}
-              >
-                <Ionicons name="swap-vertical-outline" size={18} color="#fff" />
-                <Text style={styles.exportBtnText}>Export / Import</Text>
-              </TouchableOpacity>
+          <View style={styles.themeRow}>
+            <Ionicons
+              name={isDark ? 'moon' : 'sunny-outline'}
+              size={18}
+              color={isDark ? '#aaa' : '#FFD700'}
+            />
+            <Text style={styles.themeText}>Dark Mode</Text>
+            <Switch
+              value={isDark}
+              onValueChange={toggleTheme}
+              trackColor={{ false: '#555', true: '#4CAF50' }}
+              thumbColor={isDark ? '#fff' : '#f0f0f0'}
+            />
+          </View>
 
-            </View>
         </View>
 
         {/* Add Category */}
@@ -218,41 +205,32 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   topRow: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#555',
   },
-  exportImportBtn: {
-    height: 40,
+  exportBtn: {
     backgroundColor: '#FF9800',
+    padding: 8,
     borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    paddingHorizontal: 12,
-  },
-  sidebarBottom: {
-    borderTopWidth: 1,
-    borderTopColor: '#555',
-    paddingTop: 12,
-    gap: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
   },
   themeRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-    borderBottomWidth: 1,
-  },
-  themeLabel: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    gap: 6,
   },
   themeText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
+    color: '#ccc',
   },
   buttonText: {
     color: "#fff",
