@@ -7,7 +7,7 @@ import ItemOfTheDay from '../../components/dashboard/ItemOfTheDay'
 import CategoryPreview from '../../components/dashboard/CategoryPreview'
 import { useCategories } from '../../hooks/useCategories'
 import { useDashboardStats } from '../../hooks/useDashboardStats'
-import { useThemeContext } from '../../context/ThemeContext'
+import { useThemeContext } from '../../hooks/ThemeContext'
 import { COLORS } from '../../constants'
 
 const Dashboard = () => {
@@ -34,6 +34,7 @@ const Dashboard = () => {
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <ScrollView
         style={styles.scrollView}
+        contentContainerStyle={{ paddingBottom: 100 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         <View style={[styles.section, { backgroundColor: theme.surface }]}>

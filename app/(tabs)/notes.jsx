@@ -17,7 +17,7 @@ import { useCategories } from '../../hooks/useCategories'
 import { useSidebar } from '../../hooks/useSidebar'
 import { useItemModal } from '../../hooks/useItemModal'
 import { useSearch } from '../../hooks/useSearch'
-import { useThemeContext } from '../../context/ThemeContext'
+import { useThemeContext } from '../../hooks/ThemeContext'
 import { exportData, processImportData, validateImportData } from '../../utils/dataManager'
 
 const Notes = () => {
@@ -207,7 +207,7 @@ export default Notes
 const styles = StyleSheet.create({
   container: { flex: 1 },
   center: { justifyContent: 'center', alignItems: 'center' },
-  body: { flex: 1, padding: 16 },
+  body: { flex: 1, padding: 16,   paddingBottom: 100, },
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
