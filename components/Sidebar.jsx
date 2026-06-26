@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#333",
     padding: 16,
     paddingTop: 24,
+    paddingBottom: 100,
     zIndex: 100,
   },
   topRow: {

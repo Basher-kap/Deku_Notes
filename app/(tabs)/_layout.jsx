@@ -17,7 +17,7 @@ const LiquidGlassTabBar = ({ state, descriptors, navigation }) => {
   const { isDark } = useThemeContext()
 
   return (
-    <View style={[styles.tabBarWrapper, { paddingBottom: insets.bottom + 8 }]}>
+    <View style={[styles.tabBarWrapper, { paddingBottom: insets.bottom }]}>
       <View style={[
         styles.glassContainer,
         isDark ? styles.glassContainerDark : styles.glassContainerLight,
@@ -141,8 +141,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
-    paddingHorizontal: 24,
-    // No background — fully transparent wrapper
+    paddingHorizontal: 70,
   },
   glassContainer: {
     width: '100%',
@@ -157,7 +156,6 @@ const styles = StyleSheet.create({
         shadowRadius: 24,
       },
       android: {
-        elevation: 12,
       },
     }),
   },
@@ -188,7 +186,7 @@ const styles = StyleSheet.create({
   },
   tabsRow: {
     flexDirection: 'row',
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 8,
     zIndex: 5,
   },
