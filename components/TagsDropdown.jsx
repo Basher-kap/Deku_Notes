@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, Modal, FlatList } from 'react-native'
 import React, { useState, useMemo } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useThemeContext } from '../hooks/ThemeContext'
+import { useThemeContext } from '../context/ThemeContext'
 
 const TagsDropdown = ({ selectedCategory, selectedTag, onTagSelect }) => {
   const { theme } = useThemeContext()

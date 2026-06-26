@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useThemeContext } from '../../hooks/ThemeContext'
+import { useThemeContext } from '../../context/ThemeContext'
 
 const StatisticsCard = ({ title, value, icon, color, subtitle, onPress }) => {
   const { theme } = useThemeContext()

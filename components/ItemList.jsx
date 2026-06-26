@@ -4,7 +4,7 @@ import {
 } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useThemeContext } from '../hooks/ThemeContext'
+import { useThemeContext } from '../context/ThemeContext'
 import { COLORS } from '../constants'
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
