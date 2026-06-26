@@ -19,10 +19,13 @@ import { useSidebar } from '../../hooks/useSidebar'
 import { useItemModal } from '../../hooks/useItemModal'
 import { useSearch } from '../../hooks/useSearch'
 import { exportData, processImportData, validateImportData } from '../../utils/dataManager'
+import { useThemeContext } from '../../context/ThemeContext'
+
 
 const Notes = () => {
   const navigation = useNavigation()
   const { category: categoryIdFromDashboard } = useLocalSearchParams()
+  const { theme } = useThemeContext()
 
   const {
     categories,
@@ -158,7 +161,7 @@ const Notes = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} onClear={clearSearch} />
 
       <View style={styles.topRow}>

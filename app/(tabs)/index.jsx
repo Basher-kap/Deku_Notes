@@ -9,12 +9,15 @@ import CategoryPreview from '../../components/dashboard/CategoryPreview'
 import { useCategories } from '../../hooks/useCategories'
 import { useDashboardStats } from '../../hooks/useDashboardStats'
 import { COLORS } from '../../constants'
+import { useThemeContext } from '../../context/ThemeContext'
 
 const Dashboard = () => {
   const [refreshing, setRefreshing] = useState(false)
 
   const { categories, isLoading } = useCategories()
   const { totalItems, totalCategories, refreshStats } = useDashboardStats(categories)
+  const { theme } = useThemeContext()
+
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true)
@@ -31,14 +34,14 @@ const Dashboard = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <ScrollView
         style={styles.scrollView}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         <View style={styles.section}>
-          <Text style={styles.welcomeTitle}>Welcome back! 👋</Text>
-          <Text style={styles.welcomeSubtitle}>Here's what's happening with your notes</Text>
+          <Text style={[styles.welcomeTitle, { color: theme.textPrimary }]}>Welcome back! 👋</Text>
+          <Text style={[styles.welcomeSubtitle, { color: theme.textPrimary }]}>Here's what's happening with your notes</Text>
         </View>
 
         <View style={styles.section}>

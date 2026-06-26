@@ -2,6 +2,8 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Animated, Alert, ScrollView, Modal } from 'react-native'
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { Switch } from 'react-native'
+import { useThemeContext } from '../context/ThemeContext'
 
 const Sidebar = ({ 
   slideAnim, 
@@ -11,7 +13,7 @@ const Sidebar = ({
   onAddCategory, 
   onSelectCategory, 
   onDeleteCategory,
-  onRenameCategory, //added here 
+  onRenameCategory, 
   onExportImportPress
 }) => {
 
@@ -20,6 +22,8 @@ const Sidebar = ({
   const [renameModalVisible, setRenameModalVisible] = useState(false);
   const [categoryToRename, setCategoryToRename] = useState(null);
   const [renameCategoryValue, setRenameCategoryValue] = useState('');
+  const { isDark, toggleTheme, theme } = useThemeContext()
+
 
   const handleRenamePress = (category) => { //when rename is pressed
     setCategoryToRename(category);
@@ -58,13 +62,39 @@ const Sidebar = ({
       <ScrollView>
         {/* Top Row: Backup Button */}
         <View style={styles.topRow}>
-          <TouchableOpacity 
-            style={[styles.exportImportBtn, { backgroundColor: '#FF9800' }]} 
-            onPress={onExportImportPress}
-          >
-            <Ionicons name="cloud-outline" size={20} color="#fff" />
-            <Text style={styles.buttonText}>Backup</Text>
-          </TouchableOpacity>
+          {/* Bottom actions */}
+            <View style={styles.sidebarBottom}>
+
+              {/* Dark mode row */}
+              <View style={[styles.themeRow, { borderColor: theme.sidebarBorder }]}>
+                <View style={styles.themeLabel}>
+                  <Ionicons
+                    name={isDark ? 'moon' : 'sunny-outline'}
+                    size={18}
+                    color={isDark ? '#aaa' : '#FFD700'}
+                  />
+                  <Text style={[styles.themeText, { color: theme.textSecondary }]}>
+                    Dark Mode
+                  </Text>
+                </View>
+                <Switch
+                  value={isDark}
+                  onValueChange={toggleTheme}
+                  trackColor={{ false: '#555', true: '#4CAF50' }}
+                  thumbColor={isDark ? '#fff' : '#f0f0f0'}
+                />
+              </View>
+
+              {/* Export / Import */}
+              <TouchableOpacity
+                style={[styles.exportBtn, { borderColor: theme.sidebarBorder }]}
+                onPress={onExportImportPress}
+              >
+                <Ionicons name="swap-vertical-outline" size={18} color="#fff" />
+                <Text style={styles.exportBtnText}>Export / Import</Text>
+              </TouchableOpacity>
+
+            </View>
         </View>
 
         {/* Add Category */}
@@ -200,6 +230,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "row",
     paddingHorizontal: 12,
+  },
+  sidebarBottom: {
+    borderTopWidth: 1,
+    borderTopColor: '#555',
+    paddingTop: 12,
+    gap: 8,
+  },
+  themeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+  },
+  themeLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  themeText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
   buttonText: {
     color: "#fff",
