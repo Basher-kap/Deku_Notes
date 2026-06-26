@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, TouchableOpacity, Modal, StyleSheet, Animated, ScrollView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { useThemeContext } from '../hooks/ThemeContext'
+import { useThemeContext } from '../context/ThemeContext'
 
 const FlashcardModal = ({ visible, onClose, items, categoryName }) => {
   const { theme } = useThemeContext()

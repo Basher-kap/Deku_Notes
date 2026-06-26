@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Alert, StyleSheet, Modal } from 'react-na
 import * as FileSystem from 'expo-file-system/legacy'
 import * as DocumentPicker from 'expo-document-picker'
 import { Ionicons } from '@expo/vector-icons'
-import { useThemeContext } from '../hooks/ThemeContext'
+import { useThemeContext } from '../context/ThemeContext'
 
 export default function ExportImportModal({ visible, onClose, onExport, onImport }) {
   const { theme } = useThemeContext()

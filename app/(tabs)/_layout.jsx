@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useThemeContext } from '../../hooks/ThemeContext'
+import { useThemeContext } from '../../context/ThemeContext'
 import { COLORS } from '../../constants'
 
 const TAB_CONFIG = {

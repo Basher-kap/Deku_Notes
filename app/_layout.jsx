@@ -1,7 +1,7 @@
 // app/_layout.jsx
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import { ThemeProvider, useThemeContext } from '../hooks/ThemeContext'
+import { ThemeProvider, useThemeContext } from '../context/ThemeContext'
 
 function AppContent() {
   const { isDark } = useThemeContext()

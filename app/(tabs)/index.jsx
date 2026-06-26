@@ -7,7 +7,7 @@ import ItemOfTheDay from '../../components/dashboard/ItemOfTheDay'
 import CategoryPreview from '../../components/dashboard/CategoryPreview'
 import { useCategories } from '../../hooks/useCategories'
 import { useDashboardStats } from '../../hooks/useDashboardStats'
-import { useThemeContext } from '../../hooks/ThemeContext'
+import { useThemeContext } from '../../context/ThemeContext'
 import { COLORS } from '../../constants'
 
 const Dashboard = () => {

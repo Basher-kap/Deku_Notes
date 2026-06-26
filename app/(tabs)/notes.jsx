@@ -17,7 +17,7 @@ import { useCategories } from '../../hooks/useCategories'
 import { useSidebar } from '../../hooks/useSidebar'
 import { useItemModal } from '../../hooks/useItemModal'
 import { useSearch } from '../../hooks/useSearch'
-import { useThemeContext } from '../../hooks/ThemeContext'
+import { useThemeContext } from '../../context/ThemeContext'
 import { exportData, processImportData, validateImportData } from '../../utils/dataManager'
 
 const Notes = () => {
