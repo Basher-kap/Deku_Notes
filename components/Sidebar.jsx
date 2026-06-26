@@ -1,64 +1,73 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Animated, Alert, ScrollView, Modal, KeyboardAvoidingView, Platform } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Animated, Alert, ScrollView, Modal, KeyboardAvoidingView, Platform, Switch } from 'react-native'
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { Switch } from 'react-native'
 import { useThemeContext } from '../context/ThemeContext'
 
-const Sidebar = ({ 
-  slideAnim, 
-  categories, 
-  newCategoryName, 
-  setNewCategoryName, 
-  onAddCategory, 
-  onSelectCategory, 
+const Sidebar = ({
+  slideAnim,
+  categories,
+  newCategoryName,
+  setNewCategoryName,
+  onAddCategory,
+  onSelectCategory,
   onDeleteCategory,
-  onRenameCategory, 
+  onRenameCategory,
   onExportImportPress
 }) => {
-
-  const [menuVisible, setMenuVisible] = useState(null); 
-  const [renameModalVisible, setRenameModalVisible] = useState(false);
-  const [categoryToRename, setCategoryToRename] = useState(null);
-  const [renameCategoryValue, setRenameCategoryValue] = useState('');
+  const [menuVisible, setMenuVisible] = useState(null)
+  const [renameModalVisible, setRenameModalVisible] = useState(false)
+  const [categoryToRename, setCategoryToRename] = useState(null)
+  const [renameCategoryValue, setRenameCategoryValue] = useState('')
   const { isDark, toggleTheme, theme } = useThemeContext()
 
+  // Sidebar has its own surface colors since it overlays the screen
+  const sb = {
+    bg:           isDark ? '#1a1a1a' : '#2c2c2c',
+    border:       isDark ? '#2e2e2e' : '#444444',
+    text:         isDark ? '#e0e0e0' : '#ffffff',
+    textMuted:    isDark ? '#888888' : '#aaaaaa',
+    inputBg:      isDark ? '#2a2a2a' : '#3a3a3a',
+    inputBorder:  isDark ? '#3a3a3a' : '#555555',
+    dropdownBg:   isDark ? '#252525' : '#444444',
+    dropdownBorder: isDark ? '#333333' : '#555555',
+    modalBg:      isDark ? '#1e1e1e' : '#3a3a3a',
+    cancelBtn:    isDark ? '#3a3a3a' : '#666666',
+  }
+
   const handleRenamePress = (category) => {
-    setCategoryToRename(category);
-    setRenameCategoryValue(category.name);
-    setMenuVisible(null);
-    setRenameModalVisible(true);
-  };
+    setCategoryToRename(category)
+    setRenameCategoryValue(category.name)
+    setMenuVisible(null)
+    setRenameModalVisible(true)
+  }
 
   const handleRenameSubmit = () => {
     if (renameCategoryValue.trim() && categoryToRename) {
-      onRenameCategory(categoryToRename.id, renameCategoryValue.trim());
-      setRenameModalVisible(false);
-      setCategoryToRename(null);
-      setRenameCategoryValue('');
+      onRenameCategory(categoryToRename.id, renameCategoryValue.trim())
+      setRenameModalVisible(false)
+      setCategoryToRename(null)
+      setRenameCategoryValue('')
     }
-  };
+  }
 
   const handleDeletePress = (category) => {
-    setMenuVisible(null);
+    setMenuVisible(null)
     Alert.alert(
-      "Delete Category",
+      'Delete Category',
       `Are you sure you want to delete "${category.name}"?`,
       [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete", 
-          style: "destructive", 
-          onPress: () => onDeleteCategory(category.id) 
-        }
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => onDeleteCategory(category.id) }
       ]
-    );
-  };
+    )
+  }
 
   return (
-    <Animated.View style={[styles.sidebar, { transform: [{ translateX: slideAnim }] }]}>
+    <Animated.View style={[styles.sidebar, { backgroundColor: sb.bg, transform: [{ translateX: slideAnim }] }]}>
       <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
-        {/* Top Row: Export button & Dark mode toggle */}
-        <View style={styles.topRow}>
+
+        {/* Top Row: Cloud backup + Dark mode toggle */}
+        <View style={[styles.topRow, { borderBottomColor: sb.border }]}>
           <TouchableOpacity style={styles.exportBtn} onPress={onExportImportPress}>
             <Ionicons name="cloud-outline" size={22} color="#fff" />
           </TouchableOpacity>
@@ -67,7 +76,7 @@ const Sidebar = ({
             <Ionicons
               name={isDark ? 'moon' : 'sunny-outline'}
               size={18}
-              color={isDark ? '#aaa' : '#FFD700'}
+              color={isDark ? '#7ecbff' : '#FFD700'}
             />
             <Switch
               value={isDark}
@@ -84,8 +93,8 @@ const Sidebar = ({
             value={newCategoryName}
             onChangeText={setNewCategoryName}
             placeholder="New Category"
-            placeholderTextColor="#aaa"
-            style={styles.categoryInput}
+            placeholderTextColor={sb.textMuted}
+            style={[styles.categoryInput, { backgroundColor: sb.inputBg, borderColor: sb.inputBorder, color: sb.text }]}
           />
           <TouchableOpacity style={styles.addCategoryBtn} onPress={onAddCategory}>
             <Ionicons name="add" size={22} color="#fff" />
@@ -97,58 +106,51 @@ const Sidebar = ({
           {[...categories]
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((cat, index) => {
-              const isMenuOpen = menuVisible === cat.id;
-              const isLastTwo = index >= categories.length - 2;
+              const isMenuOpen = menuVisible === cat.id
+              const isLastTwo = index >= categories.length - 2
 
               return (
-                <View 
-                  key={cat.id || index} 
+                <View
+                  key={cat.id || index}
                   style={[
-                    styles.categoryRow, 
-                    // When menu is open, force this row to stack on top of everything else
-                    isMenuOpen && { zIndex: 9999, elevation: 13 } 
+                    styles.categoryRow,
+                    { borderBottomColor: sb.border },
+                    isMenuOpen && { zIndex: 9999, elevation: 13 }
                   ]}
                 >
-                  <TouchableOpacity
-                    onPress={() => onSelectCategory(cat)}
-                    style={styles.categoryTouchable}
-                  >
-                    <Text style={styles.categoryItem}>📂 {cat.name}</Text>
+                  <TouchableOpacity onPress={() => onSelectCategory(cat)} style={styles.categoryTouchable}>
+                    <Text style={[styles.categoryItem, { color: sb.text }]}>📂 {cat.name}</Text>
                   </TouchableOpacity>
 
-                  {/* Three-dot menu button */}
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     onPress={() => setMenuVisible(isMenuOpen ? null : cat.id)}
                     style={styles.menuButton}
                   >
-                    <Ionicons name="ellipsis-vertical" size={20} color="#aaa" />
+                    <Ionicons name="ellipsis-vertical" size={20} color={sb.textMuted} />
                   </TouchableOpacity>
 
-                  {/* Dropdown menu */}
                   {isMenuOpen && (
                     <View style={[
                       styles.dropdownMenu,
-                      isLastTwo && styles.dropdownMenuBottom // Flips menu upwards if it's near the bottom edge
+                      { backgroundColor: sb.dropdownBg, borderColor: sb.dropdownBorder },
+                      isLastTwo && styles.dropdownMenuBottom,
                     ]}>
-                      <TouchableOpacity
-                        style={styles.menuItem}
-                        onPress={() => handleRenamePress(cat)}
-                      >
-                        <Ionicons name="create-outline" size={18} color="#fff" />
-                        <Text style={styles.menuItemText}>Rename</Text>
+                      <TouchableOpacity style={styles.menuItem} onPress={() => handleRenamePress(cat)}>
+                        <Ionicons name="create-outline" size={18} color="#4CAF50" />
+                        <Text style={[styles.menuItemText, { color: sb.text }]}>Rename</Text>
                       </TouchableOpacity>
-                      
+
                       <TouchableOpacity
-                        style={[styles.menuItem, styles.deleteMenuItem]}
+                        style={[styles.menuItem, { borderTopColor: sb.dropdownBorder, borderTopWidth: 1 }]}
                         onPress={() => handleDeletePress(cat)}
                       >
-                        <Ionicons name="trash-outline" size={18} color="#f66" />
-                        <Text style={[styles.menuItemText, { color: '#f66' }]}>Delete</Text>
+                        <Ionicons name="trash-outline" size={18} color="#e74c3c" />
+                        <Text style={[styles.menuItemText, { color: '#e74c3c' }]}>Delete</Text>
                       </TouchableOpacity>
                     </View>
                   )}
                 </View>
-              );
+              )
             })}
         </View>
       </ScrollView>
@@ -169,24 +171,27 @@ const Sidebar = ({
             activeOpacity={1}
             onPress={() => setRenameModalVisible(false)}
           >
-            <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
-              <Text style={styles.modalTitle}>Rename Category</Text>
+            <View
+              style={[styles.modalContent, { backgroundColor: sb.modalBg, borderColor: sb.border, borderWidth: 1 }]}
+              onStartShouldSetResponder={() => true}
+            >
+              <Text style={[styles.modalTitle, { color: sb.text }]}>Rename Category</Text>
 
               <TextInput
                 value={renameCategoryValue}
                 onChangeText={setRenameCategoryValue}
                 placeholder="Category name"
-                placeholderTextColor="#aaa"
-                style={styles.modalInput}
+                placeholderTextColor={sb.textMuted}
+                style={[styles.modalInput, { backgroundColor: sb.inputBg, borderColor: sb.inputBorder, color: sb.text }]}
                 autoFocus
               />
 
               <View style={styles.modalButtons}>
                 <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
+                  style={[styles.modalButton, { backgroundColor: sb.cancelBtn }]}
                   onPress={() => setRenameModalVisible(false)}
                 >
-                  <Text style={styles.buttonText}>Cancel</Text>
+                  <Text style={[styles.buttonText, { color: sb.text }]}>Cancel</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -208,12 +213,11 @@ export default Sidebar
 
 const styles = StyleSheet.create({
   sidebar: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     width: 250,
-    height: "100%",
-    backgroundColor: "#333",
+    height: '100%',
     padding: 16,
     paddingTop: 24,
     paddingBottom: 100,
@@ -226,7 +230,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#555',
   },
   exportBtn: {
     backgroundColor: '#FF9800',
@@ -242,30 +245,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    marginLeft: 6,
+  categories: {
+    marginTop: 20,
   },
-  categories: { 
-    marginTop: 20 
-  },
-  categoryRow: { 
-    flexDirection: "row", 
-    alignItems: "center", 
+  categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 8,
-    borderBottomWidth: 1, 
-    borderBottomColor: "#555",
+    borderBottomWidth: 1,
     paddingBottom: 4,
     position: 'relative',
   },
   categoryTouchable: {
     flex: 1,
   },
-  categoryItem: { 
-    color: "#fff", 
-    fontSize: 16, 
-    paddingVertical: 8 
+  categoryItem: {
+    fontSize: 16,
+    paddingVertical: 8,
   },
   menuButton: {
     padding: 8,
@@ -274,19 +270,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 40,
-    backgroundColor: '#444',
     borderRadius: 8,
+    borderWidth: 1,
     minWidth: 130,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 8,
     zIndex: 1000,
   },
   dropdownMenuBottom: {
     top: 'auto',
-    bottom: 40, // Places the menu neatly above the row items if it's near the bottom navigation bar
+    bottom: 40,
   },
   menuItem: {
     flexDirection: 'row',
@@ -294,58 +290,47 @@ const styles = StyleSheet.create({
     padding: 12,
     gap: 8,
   },
-  deleteMenuItem: {
-    borderTopWidth: 1,
-    borderTopColor: '#555',
-  },
   menuItemText: {
-    color: '#fff',
     fontSize: 15,
   },
-  addCategoryRow: { 
-    flexDirection: "row", 
-    alignItems: "center" 
+  addCategoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   categoryInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#555",
     borderRadius: 6,
     padding: 8,
-    color: "#fff",
     marginRight: 8,
   },
   addCategoryBtn: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: '#4CAF50',
     padding: 8,
     borderRadius: 6,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingBottom: 40,
   },
   modalContent: {
-    backgroundColor: '#444',
     borderRadius: 12,
     padding: 20,
     width: '80%',
     maxWidth: 300,
   },
   modalTitle: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 16,
   },
   modalInput: {
     borderWidth: 1,
-    borderColor: '#555',
     borderRadius: 6,
     padding: 12,
-    color: '#fff',
     marginBottom: 20,
     fontSize: 16,
   },
@@ -360,10 +345,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
-  cancelButton: {
-    backgroundColor: '#666',
-  },
   saveButton: {
     backgroundColor: '#4CAF50',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
   },
 })

@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useThemeContext } from '../context/ThemeContext'
 
 const FlashcardModal = ({ visible, onClose, items, categoryName }) => {
-  const { theme } = useThemeContext()
+  const { theme, isDark } = useThemeContext()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFlipped, setIsFlipped] = useState(false)
   const [flipAnimation] = useState(new Animated.Value(0))
@@ -74,6 +74,16 @@ const FlashcardModal = ({ visible, onClose, items, categoryName }) => {
   const frontRotateY = flipAnimation.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '180deg'] })
   const backRotateY = flipAnimation.interpolate({ inputRange: [0, 1], outputRange: ['180deg', '360deg'] })
 
+  const dynamicCardFront = {
+    backgroundColor: isDark ? '#1a2a3a' : '#e3f2fd',
+    borderColor: isDark ? '#42A5F5' : '#2196F3',
+  }
+
+  const dynamicCardBack = {
+    backgroundColor: isDark ? '#1a2e1a' : '#e8f5e8',
+    borderColor: isDark ? '#66BB6A' : '#4CAF50',
+  }
+
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.overlay}>
@@ -97,18 +107,18 @@ const FlashcardModal = ({ visible, onClose, items, categoryName }) => {
 
           <View style={styles.cardContainer}>
             <TouchableOpacity onPress={handleDoubleTap} style={styles.cardTouchable}>
-              <Animated.View style={[styles.card, styles.cardFront, { transform: [{ rotateY: frontRotateY }] }, isFlipped && styles.cardHidden]}>
+              <Animated.View style={[styles.card, dynamicCardFront, { transform: [{ rotateY: frontRotateY }] }, isFlipped && styles.cardHidden]}>
                 <Text style={styles.cardLabel}>Description</Text>
                 <ScrollView contentContainerStyle={styles.cardScroll} showsVerticalScrollIndicator={false}>
-                  <Text style={styles.cardText}>{currentItem?.description || 'No description available'}</Text>
+                  <Text style={[styles.cardText, { color: theme.textPrimary }]}>{currentItem?.description || 'No description available'}</Text>
                 </ScrollView>
                 <Text style={[styles.tapHint, { color: theme.textMuted }]}>Double tap to reveal answer</Text>
               </Animated.View>
 
-              <Animated.View style={[styles.card, styles.cardBack, { transform: [{ rotateY: backRotateY }] }, !isFlipped && styles.cardHidden]}>
+              <Animated.View style={[styles.card, dynamicCardBack, { transform: [{ rotateY: backRotateY }] }, !isFlipped && styles.cardHidden]}>
                 <Text style={styles.cardLabel}>Answer</Text>
                 <ScrollView contentContainerStyle={styles.cardScroll} showsVerticalScrollIndicator={false}>
-                  <Text style={styles.cardText}>{currentItem?.name}</Text>
+                  <Text style={[styles.cardText, { color: theme.textPrimary }]}>{currentItem?.name}</Text>
                   {currentItem?.tags?.length > 0 && (
                     <Text style={[styles.tagsText, { color: theme.textMuted }]}>
                       Tags: {currentItem.tags.join(', ')}
@@ -157,12 +167,10 @@ const styles = StyleSheet.create({
   cardContainer: { marginBottom: 25, height: 320 },
   cardTouchable: { flex: 1 },
   card: { position: 'absolute', width: '100%', height: '100%', borderRadius: 12, padding: 20, justifyContent: 'center', alignItems: 'center', borderWidth: 2, backfaceVisibility: 'hidden' },
-  cardFront: { backgroundColor: '#e3f2fd', borderColor: '#2196F3' },
-  cardBack: { backgroundColor: '#e8f5e8', borderColor: '#4CAF50' },
   cardHidden: { opacity: 0 },
   cardLabel: { fontSize: 14, fontWeight: '600', color: '#666', marginBottom: 10, textTransform: 'uppercase', letterSpacing: 1 },
   cardScroll: { flexGrow: 1, justifyContent: 'center', paddingVertical: 4 },
-  cardText: { fontSize: 14, fontWeight: '500', color: '#333', textAlign: 'center', lineHeight: 24 },
+  cardText: { fontSize: 14, fontWeight: '500', textAlign: 'center', lineHeight: 24 },
   tagsText: { fontSize: 12, marginTop: 10, fontStyle: 'italic' },
   tapHint: { fontSize: 12, marginTop: 10, fontStyle: 'italic' },
   controls: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, marginBottom: 5 },

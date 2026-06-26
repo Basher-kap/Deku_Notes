@@ -1,6 +1,7 @@
 // context/ThemeContext.js
 import React, { createContext, useContext } from 'react'
 import { useTheme } from '../hooks/useTheme'
+import { COLORS, DARK_COLORS } from '../constants'
 
 const ThemeContext = createContext(null)
 

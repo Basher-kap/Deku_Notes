@@ -11,7 +11,7 @@ function AppContent() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style={isDark ? 'light' : 'dark'} hidden={false} />
+      <StatusBar style={isDark ? 'light' : 'dark'} />
     </>
   )
 }
