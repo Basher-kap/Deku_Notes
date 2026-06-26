@@ -1,5 +1,3 @@
-// app/(tabs)/notes.jsx
-
 import { StyleSheet, View, Text, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
@@ -18,9 +16,8 @@ import { useCategories } from '../../hooks/useCategories'
 import { useSidebar } from '../../hooks/useSidebar'
 import { useItemModal } from '../../hooks/useItemModal'
 import { useSearch } from '../../hooks/useSearch'
+import { useThemeContext } from '../../hooks/ThemeContext'
 import { exportData, processImportData, validateImportData } from '../../utils/dataManager'
-import { useThemeContext } from '../../context/ThemeContext'
-
 
 const Notes = () => {
   const navigation = useNavigation()
@@ -28,35 +25,20 @@ const Notes = () => {
   const { theme } = useThemeContext()
 
   const {
-    categories,
-    selectedCategory,
-    isLoading,
-    setSelectedCategory,
-    addCategory,
-    renameCategory,
-    deleteCategory,
-    addItem,
-    editItem,
-    deleteItem,
-    updateCategorySortOrder,
-    importData,
+    categories, selectedCategory, isLoading,
+    setSelectedCategory, addCategory, renameCategory,
+    deleteCategory, addItem, editItem, deleteItem,
+    updateCategorySortOrder, importData,
   } = useCategories()
 
   const { slideAnim, toggleSidebar, closeSidebar } = useSidebar()
 
   const {
-    modalVisible,
-    itemName, setItemName,
-    itemTags, setItemTags,
-    itemDesc, setItemDesc,
-    editingItem,
-    openModal,
-    closeModal,
-    openEditModal,
-    getItemData,
+    modalVisible, itemName, setItemName,
+    itemTags, setItemTags, itemDesc, setItemDesc,
+    editingItem, openModal, closeModal, openEditModal, getItemData,
   } = useItemModal()
 
-  // ⚠️ selectedTag must be declared BEFORE useSearch below
   const [selectedTag, setSelectedTag] = useState(null)
   const [newCategoryName, setNewCategoryName] = useState('')
   const [expandedIndex, setExpandedIndex] = useState(null)
@@ -77,30 +59,25 @@ const Notes = () => {
     navigation.setOptions({
       headerTitle: () => (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#333' }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: theme.textPrimary }}>
             {selectedCategory?.name || 'Notes'}
           </Text>
-          <Text style={{ fontSize: 16, color: '#666', marginLeft: 6 }}>
+          <Text style={{ fontSize: 16, color: theme.textSecondary, marginLeft: 6 }}>
             ({itemCount}つ){tagSuffix}
           </Text>
         </View>
       ),
+      headerStyle: { backgroundColor: theme.surface },
     })
-  }, [selectedCategory, filteredAndSortedItems.length, selectedTag])
+  }, [selectedCategory, filteredAndSortedItems.length, selectedTag, theme])
 
   useEffect(() => {
     if (!categoryIdFromDashboard || isLoading || categories.length === 0) return
     const match = categories.find((c) => c.id === categoryIdFromDashboard)
-    if (match) {
-      setSelectedCategory(match)
-      closeSidebar()
-    }
+    if (match) { setSelectedCategory(match); closeSidebar() }
   }, [categoryIdFromDashboard, isLoading, categories])
-  
-  const handleAddCategory = () => {
-    addCategory(newCategoryName)
-    setNewCategoryName('')
-  }
+
+  const handleAddCategory = () => { addCategory(newCategoryName); setNewCategoryName('') }
 
   const handleSelectCategory = (category) => {
     setSelectedCategory(category)
@@ -111,29 +88,17 @@ const Notes = () => {
 
   const handleSaveItem = () => {
     const itemData = getItemData()
-    if (editingItem !== null) {
-      editItem(editingItem.id, itemData)
-    } else {
-      addItem(itemData)
-    }
+    if (editingItem !== null) { editItem(editingItem.id, itemData) } else { addItem(itemData) }
     closeModal()
     setExpandedIndex(null)
   }
 
   const handleDeleteItem = (itemId) => {
     Alert.alert(
-      'Delete Item',
-      'Are you sure you want to delete this item?',
+      'Delete Item', 'Are you sure you want to delete this item?',
       [
         { text: 'Cancel', style: 'cancel', onPress: () => setExpandedIndex(null) },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => {
-            deleteItem(itemId)
-            setExpandedIndex(null)
-          },
-        },
+        { text: 'Delete', style: 'destructive', onPress: () => { deleteItem(itemId); setExpandedIndex(null) } },
       ],
       { cancelable: true }
     )
@@ -145,17 +110,14 @@ const Notes = () => {
 
   const handleImport = (data) => {
     const validation = validateImportData(data)
-    if (!validation.valid) {
-      Alert.alert('Error', validation.error)
-      return
-    }
+    if (!validation.valid) { Alert.alert('Error', validation.error); return }
     importData({ categories: processImportData(data) })
   }
 
   if (isLoading) {
     return (
-      <View style={[styles.container, styles.center]}>
-        <Text style={styles.loadingText}>Loading your notes...</Text>
+      <View style={[styles.container, styles.center, { backgroundColor: theme.background }]}>
+        <Text style={{ fontSize: 18, color: theme.textSecondary }}>Loading your notes...</Text>
       </View>
     )
   }
@@ -170,10 +132,7 @@ const Notes = () => {
           onSortChange={handleSortChange}
           selectedCategory={selectedCategory}
         />
-        <FlashcardButton
-          selectedCategory={selectedCategory}
-          onPress={() => setFlashcardModalVisible(true)}
-        />
+        <FlashcardButton selectedCategory={selectedCategory} onPress={() => setFlashcardModalVisible(true)} />
       </View>
 
       <View style={styles.topRow}>
@@ -245,22 +204,9 @@ const Notes = () => {
 export default Notes
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fdfdfd',
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 18,
-    color: '#666',
-  },
-  body: {
-    flex: 1,
-    padding: 16,
-  },
+  container: { flex: 1 },
+  center: { justifyContent: 'center', alignItems: 'center' },
+  body: { flex: 1, padding: 16 },
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',

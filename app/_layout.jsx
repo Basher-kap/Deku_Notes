@@ -1,15 +1,24 @@
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { ThemeProvider } from '../context/ThemeContext'
+import { Stack } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
+import { ThemeProvider, useThemeContext } from '../hooks/ThemeContext'
 
-export default function RootLayout() {
+function AppContent() {
+  const { isDark } = useThemeContext()
   return (
-    <ThemeProvider>
+    <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar hidden />
+      <StatusBar style={isDark ? 'light' : 'dark'} hidden={false} />
+    </>
+  )
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
-  );
+  )
 }

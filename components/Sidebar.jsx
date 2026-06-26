@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Animated, Alert, S
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { Switch } from 'react-native'
-import { useThemeContext } from '../context/ThemeContext'
+import { useThemeContext } from '../hooks/ThemeContext'
 
 const Sidebar = ({ 
   slideAnim, 
@@ -60,7 +60,7 @@ const Sidebar = ({
   return (
     <Animated.View style={[styles.sidebar, { transform: [{ translateX: slideAnim }] }]}>
       <ScrollView>
-        {/* Top Row: Export button + Dark mode toggle side by side */}
+        {/* Top Row: Export button  Dark mode toggle */}
         <View style={styles.topRow}>
 
           <TouchableOpacity style={styles.exportBtn} onPress={onExportImportPress}>
@@ -73,7 +73,6 @@ const Sidebar = ({
               size={18}
               color={isDark ? '#aaa' : '#FFD700'}
             />
-            <Text style={styles.themeText}>Dark Mode</Text>
             <Switch
               value={isDark}
               onValueChange={toggleTheme}
@@ -226,11 +225,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-  },
-  themeText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#ccc',
   },
   buttonText: {
     color: "#fff",
