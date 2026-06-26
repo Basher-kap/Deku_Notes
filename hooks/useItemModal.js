@@ -1,5 +1,4 @@
 // hooks/useItemModal.js
-
 import { useState } from 'react'
 
 const EMPTY_FORM = { itemName: '', itemTags: '', itemDesc: '' }

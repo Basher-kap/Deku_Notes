@@ -1,5 +1,4 @@
 // hooks/useDashboardStats.js
-
 import { useMemo, useCallback } from 'react'
 
 export const useDashboardStats = (categories) => {

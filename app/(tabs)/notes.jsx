@@ -1,3 +1,4 @@
+// app/(tabs)/notes.jsx
 import { StyleSheet, View, Text, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'

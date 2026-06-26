@@ -1,5 +1,4 @@
 // utils/searchUtils.js
-
 export const filterItems = (items, searchQuery) => {
   const query = searchQuery.trim().toLowerCase()
   if (!query) return items

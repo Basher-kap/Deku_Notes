@@ -1,3 +1,4 @@
+// app/(tabs)/index.jsx
 import { StyleSheet, View, Text, ScrollView, RefreshControl } from 'react-native'
 import React, { useState, useCallback } from 'react'
 import { Ionicons } from '@expo/vector-icons'

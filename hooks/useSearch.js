@@ -1,5 +1,4 @@
 // hooks/useSearch.js
-
 import { useState, useMemo } from 'react'
 import { filterItems } from '../utils/searchUtils'
 import { sortItems } from '../utils/sortUtils'   

@@ -1,5 +1,4 @@
 // hooks/useSidebar.js
-
 import { useState, useRef } from 'react'
 import { Animated } from 'react-native'
 import { SIDEBAR_WIDTH } from '../constants'
