@@ -1,5 +1,4 @@
-//Sidebar.jsx from components
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Animated, Alert, ScrollView, Modal } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Animated, Alert, ScrollView, Modal, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { Switch } from 'react-native'
@@ -17,22 +16,20 @@ const Sidebar = ({
   onExportImportPress
 }) => {
 
-  //for functions to handle rename and delete
   const [menuVisible, setMenuVisible] = useState(null); 
   const [renameModalVisible, setRenameModalVisible] = useState(false);
   const [categoryToRename, setCategoryToRename] = useState(null);
   const [renameCategoryValue, setRenameCategoryValue] = useState('');
   const { isDark, toggleTheme, theme } = useThemeContext()
 
-
-  const handleRenamePress = (category) => { //when rename is pressed
+  const handleRenamePress = (category) => {
     setCategoryToRename(category);
     setRenameCategoryValue(category.name);
     setMenuVisible(null);
     setRenameModalVisible(true);
   };
 
-  const handleRenameSubmit = () => { //then saved
+  const handleRenameSubmit = () => {
     if (renameCategoryValue.trim() && categoryToRename) {
       onRenameCategory(categoryToRename.id, renameCategoryValue.trim());
       setRenameModalVisible(false);
@@ -41,7 +38,7 @@ const Sidebar = ({
     }
   };
 
-  const handleDeletePress = (category) => { //delete function moved here, shows a dialog
+  const handleDeletePress = (category) => {
     setMenuVisible(null);
     Alert.alert(
       "Delete Category",
@@ -59,10 +56,9 @@ const Sidebar = ({
 
   return (
     <Animated.View style={[styles.sidebar, { transform: [{ translateX: slideAnim }] }]}>
-      <ScrollView>
-        {/* Top Row: Export button  Dark mode toggle */}
+      <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+        {/* Top Row: Export button & Dark mode toggle */}
         <View style={styles.topRow}>
-
           <TouchableOpacity style={styles.exportBtn} onPress={onExportImportPress}>
             <Ionicons name="cloud-outline" size={22} color="#fff" />
           </TouchableOpacity>
@@ -80,7 +76,6 @@ const Sidebar = ({
               thumbColor={isDark ? '#fff' : '#f0f0f0'}
             />
           </View>
-
         </View>
 
         {/* Add Category */}
@@ -101,45 +96,60 @@ const Sidebar = ({
         <View style={styles.categories}>
           {[...categories]
             .sort((a, b) => a.name.localeCompare(b.name))
-            .map((cat, index) => (
-              <View key={cat.id || index} style={styles.categoryRow}>
-                <TouchableOpacity
-                  onPress={() => onSelectCategory(cat)}
-                  style={styles.categoryTouchable}
-                >
-                  <Text style={styles.categoryItem}>📂 {cat.name}</Text>
-                </TouchableOpacity>
+            .map((cat, index) => {
+              const isMenuOpen = menuVisible === cat.id;
+              const isLastTwo = index >= categories.length - 2;
 
-                {/* Three-dot menu button */}
-                <TouchableOpacity 
-                  onPress={() => setMenuVisible(menuVisible === cat.id ? null : cat.id)}
-                  style={styles.menuButton}
+              return (
+                <View 
+                  key={cat.id || index} 
+                  style={[
+                    styles.categoryRow, 
+                    // When menu is open, force this row to stack on top of everything else
+                    isMenuOpen && { zIndex: 9999, elevation: 13 } 
+                  ]}
                 >
-                  <Ionicons name="ellipsis-vertical" size={20} color="#aaa" />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => onSelectCategory(cat)}
+                    style={styles.categoryTouchable}
+                  >
+                    <Text style={styles.categoryItem}>📂 {cat.name}</Text>
+                  </TouchableOpacity>
 
-                {/* Dropdown menu, dialog after 3 dotted is pressed */}
-                {menuVisible === cat.id && (
-                  <View style={styles.dropdownMenu}>
-                    <TouchableOpacity //rename button
-                      style={styles.menuItem}
-                      onPress={() => handleRenamePress(cat)}
-                    >
-                      <Ionicons name="create-outline" size={18} color="#fff" />
-                      <Text style={styles.menuItemText}>Rename</Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity //delete button moved here
-                      style={[styles.menuItem, styles.deleteMenuItem]}
-                      onPress={() => handleDeletePress(cat)}
-                    >
-                      <Ionicons name="trash-outline" size={18} color="#f66" />
-                      <Text style={[styles.menuItemText, { color: '#f66' }]}>Delete</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              </View>
-            ))}
+                  {/* Three-dot menu button */}
+                  <TouchableOpacity 
+                    onPress={() => setMenuVisible(isMenuOpen ? null : cat.id)}
+                    style={styles.menuButton}
+                  >
+                    <Ionicons name="ellipsis-vertical" size={20} color="#aaa" />
+                  </TouchableOpacity>
+
+                  {/* Dropdown menu */}
+                  {isMenuOpen && (
+                    <View style={[
+                      styles.dropdownMenu,
+                      isLastTwo && styles.dropdownMenuBottom // Flips menu upwards if it's near the bottom edge
+                    ]}>
+                      <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => handleRenamePress(cat)}
+                      >
+                        <Ionicons name="create-outline" size={18} color="#fff" />
+                        <Text style={styles.menuItemText}>Rename</Text>
+                      </TouchableOpacity>
+                      
+                      <TouchableOpacity
+                        style={[styles.menuItem, styles.deleteMenuItem]}
+                        onPress={() => handleDeletePress(cat)}
+                      >
+                        <Ionicons name="trash-outline" size={18} color="#f66" />
+                        <Text style={[styles.menuItemText, { color: '#f66' }]}>Delete</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
         </View>
       </ScrollView>
 
@@ -150,40 +160,45 @@ const Sidebar = ({
         animationType="fade"
         onRequestClose={() => setRenameModalVisible(false)}
       >
-        <TouchableOpacity 
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setRenameModalVisible(false)}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
         >
-          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
-            <Text style={styles.modalTitle}>Rename Category</Text>
-            
-            <TextInput
-              value={renameCategoryValue}
-              onChangeText={setRenameCategoryValue}
-              placeholder="Category name"
-              placeholderTextColor="#aaa"
-              style={styles.modalInput}
-              autoFocus
-            />
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setRenameModalVisible(false)}
+          >
+            <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+              <Text style={styles.modalTitle}>Rename Category</Text>
 
-            <View style={styles.modalButtons}>
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setRenameModalVisible(false)}
-              >
-                <Text style={styles.buttonText}>Cancel</Text>
-              </TouchableOpacity>
+              <TextInput
+                value={renameCategoryValue}
+                onChangeText={setRenameCategoryValue}
+                placeholder="Category name"
+                placeholderTextColor="#aaa"
+                style={styles.modalInput}
+                autoFocus
+              />
 
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.saveButton]}
-                onPress={handleRenameSubmit}
-              >
-                <Text style={styles.buttonText}>Save</Text>
-              </TouchableOpacity>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setRenameModalVisible(false)}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.saveButton]}
+                  onPress={handleRenameSubmit}
+                >
+                  <Text style={styles.buttonText}>Save</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
       </Modal>
     </Animated.View>
   )
@@ -269,6 +284,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     zIndex: 1000,
   },
+  dropdownMenuBottom: {
+    top: 'auto',
+    bottom: 40, // Places the menu neatly above the row items if it's near the bottom navigation bar
+  },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -304,8 +323,9 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    paddingBottom: 40,
   },
   modalContent: {
     backgroundColor: '#444',
