@@ -136,7 +136,7 @@ const Sidebar = ({
                       isLastTwo && styles.dropdownMenuBottom,
                     ]}>
                       <TouchableOpacity style={styles.menuItem} onPress={() => handleRenamePress(cat)}>
-                        <Ionicons name="create-outline" size={18} color="#4CAF50" />
+                        <Ionicons name="create-outline" size={18} color={theme.primary} />
                         <Text style={[styles.menuItemText, { color: sb.text }]}>Rename</Text>
                       </TouchableOpacity>
 
@@ -195,7 +195,7 @@ const Sidebar = ({
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.modalButton, styles.saveButton]}
+                  style={[styles.modalButton, styles.saveButton, {backgroundColor: theme.primary}]}
                   onPress={handleRenameSubmit}
                 >
                   <Text style={styles.buttonText}>Save</Text>

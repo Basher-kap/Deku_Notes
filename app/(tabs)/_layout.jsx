@@ -5,7 +5,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native
 import { BlurView } from 'expo-blur'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useThemeContext } from '../../context/ThemeContext'
-import { COLORS } from '../../constants'
 
 const TAB_CONFIG = {
   index: { label: 'Dashboard', icon: 'grid', iconOutline: 'grid-outline' },
@@ -14,7 +13,7 @@ const TAB_CONFIG = {
 
 const LiquidGlassTabBar = ({ state, descriptors, navigation }) => {
   const insets = useSafeAreaInsets()
-  const { isDark } = useThemeContext()
+  const { isDark, theme } = useThemeContext()
 
   return (
     <View style={[styles.tabBarWrapper, { paddingBottom: insets.bottom }]}>
@@ -23,20 +22,17 @@ const LiquidGlassTabBar = ({ state, descriptors, navigation }) => {
         isDark ? styles.glassContainerDark : styles.glassContainerLight,
       ]}>
 
-        {/* Frosted blur fill */}
         <BlurView
           intensity={isDark ? 55 : 75}
           tint={isDark ? 'dark' : 'light'}
           style={StyleSheet.absoluteFill}
         />
 
-        {/* Top specular edge — the "glass shine" line */}
         <View style={[
           styles.specularEdge,
           isDark ? styles.specularEdgeDark : styles.specularEdgeLight,
         ]} />
 
-        {/* Tabs row */}
         <View style={styles.tabsRow}>
           {state.routes.map((route, index) => {
             const isFocused = state.index === index
@@ -60,7 +56,6 @@ const LiquidGlassTabBar = ({ state, descriptors, navigation }) => {
                 onPress={onPress}
                 activeOpacity={0.7}
               >
-                {/* Active pill */}
                 {isFocused && (
                   <View style={[
                     styles.activePill,
@@ -71,7 +66,6 @@ const LiquidGlassTabBar = ({ state, descriptors, navigation }) => {
                       tint={isDark ? 'dark' : 'light'}
                       style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
                     />
-                    {/* Pill top shine */}
                     <View style={styles.pillSpecular} />
                   </View>
                 )}
@@ -81,7 +75,7 @@ const LiquidGlassTabBar = ({ state, descriptors, navigation }) => {
                   size={22}
                   color={
                     isFocused
-                      ? COLORS.primary
+                      ? theme.primary
                       : isDark
                         ? 'rgba(255,255,255,0.4)'
                         : 'rgba(0,0,0,0.35)'
@@ -91,7 +85,7 @@ const LiquidGlassTabBar = ({ state, descriptors, navigation }) => {
                   styles.tabLabel,
                   {
                     color: isFocused
-                      ? COLORS.primary
+                      ? theme.primary
                       : isDark
                         ? 'rgba(255,255,255,0.4)'
                         : 'rgba(0,0,0,0.35)',
@@ -147,7 +141,6 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 28,
     overflow: 'hidden',
-    // Shadow for floating effect
     ...Platform.select({
       ios: {
         shadowColor: '#000',
