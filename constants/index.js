@@ -25,7 +25,7 @@ export const COLORS = {
 export const DARK_COLORS = {
   primary:      '#B350AF',
   secondary:    '#DE690C',
-  accent:       '#63D84F',
+  accent:       '#4dcb37',
   warning:      '#0067FF',
   danger:       '#EF5350',
 

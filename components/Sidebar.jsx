@@ -68,7 +68,7 @@ const Sidebar = ({
 
         {/* Top Row: Cloud backup + Dark mode toggle */}
         <View style={[styles.topRow, { borderBottomColor: sb.border }]}>
-          <TouchableOpacity style={styles.exportBtn} onPress={onExportImportPress}>
+          <TouchableOpacity style={[styles.exportBtn, {backgroundColor: theme.warning}]} onPress={onExportImportPress}>
             <Ionicons name="cloud-outline" size={22} color="#fff" />
           </TouchableOpacity>
 
@@ -81,7 +81,7 @@ const Sidebar = ({
             <Switch
               value={isDark}
               onValueChange={toggleTheme}
-              trackColor={{ false: '#555', true: '#4CAF50' }}
+              trackColor={{ false: '#555', true: '#0067FF' }}
               thumbColor={isDark ? '#fff' : '#f0f0f0'}
             />
           </View>
@@ -96,7 +96,7 @@ const Sidebar = ({
             placeholderTextColor={sb.textMuted}
             style={[styles.categoryInput, { backgroundColor: sb.inputBg, borderColor: sb.inputBorder, color: sb.text }]}
           />
-          <TouchableOpacity style={styles.addCategoryBtn} onPress={onAddCategory}>
+          <TouchableOpacity style={[styles.addCategoryBtn, {backgroundColor: theme.primary}]} onPress={onAddCategory}>
             <Ionicons name="add" size={22} color="#fff" />
           </TouchableOpacity>
         </View>

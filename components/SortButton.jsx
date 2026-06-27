@@ -4,8 +4,10 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { SORT_OPTIONS, COLORS } from '../constants'
-
+import { useThemeContext } from '../context/ThemeContext'
+  
 const SortButton = ({ sortOrder, onSortChange, selectedCategory }) => {
+  const { theme } = useThemeContext()
   if (!selectedCategory) return null
 
   const currentIndex = SORT_OPTIONS.findIndex((o) => o.key === sortOrder)
@@ -17,7 +19,7 @@ const SortButton = ({ sortOrder, onSortChange, selectedCategory }) => {
   }
 
   return (
-    <TouchableOpacity style={styles.button} onPress={handlePress}>
+    <TouchableOpacity style={[styles.button, {backgroundColor: theme.secondary}]} onPress={handlePress}>
       <Ionicons name={current.icon} size={18} color="#fff" />
       <Text style={styles.text}>Sort: {current.label}</Text>
     </TouchableOpacity>

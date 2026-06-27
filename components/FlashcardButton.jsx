@@ -1,14 +1,16 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { useThemeContext } from '../context/ThemeContext'
 
 const FlashcardButton = ({ onPress, selectedCategory }) => {
+  const { theme } = useThemeContext()
   if (!selectedCategory || !selectedCategory.items || selectedCategory.items.length === 0) {
     return null;
   }
 
   return (
-    <TouchableOpacity style={styles.flashcardBtn} onPress={onPress}>
+    <TouchableOpacity style={[styles.flashcardBtn, {backgroundColor: theme.warning}]} onPress={onPress}>
       <Ionicons name="library-outline" size={22} color="#fff" />
       <Text style={styles.flashcardText}>Flashcards</Text>
     </TouchableOpacity>
