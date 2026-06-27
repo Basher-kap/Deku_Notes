@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { ITEM_OF_DAY_KEY, COLORS } from '../../constants'
+import { ITEM_OF_DAY_KEY } from '../../constants'
 import { useThemeContext } from '../../context/ThemeContext'
 
 const getAllItems = (categories) =>
@@ -51,7 +51,7 @@ const ItemOfTheDay = ({ categories }) => {
     return (
       <View style={[styles.container, { backgroundColor: theme.surface }]}>
         <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>Item of the Day</Text>
-        <View style={[styles.card, { backgroundColor: theme.background }]}>
+        <View style={[styles.card, { backgroundColor: theme.background, borderLeftColor: theme.primary }]}>
           <Text style={[styles.loadingText, { color: theme.textSecondary }]}>Loading...</Text>
         </View>
       </View>
@@ -65,7 +65,9 @@ const ItemOfTheDay = ({ categories }) => {
         <View style={[styles.emptyCard, { backgroundColor: theme.background, borderColor: theme.border }]}>
           <Ionicons name="document-outline" size={48} color={theme.textMuted} />
           <Text style={[styles.emptyText, { color: theme.textSecondary }]}>No items available</Text>
-          <Text style={[styles.emptySubtext, { color: theme.textMuted }]}>Add some items to see your daily pick!</Text>
+          <Text style={[styles.emptySubtext, { color: theme.textMuted }]}>
+            Add some items to see your daily pick!
+          </Text>
         </View>
       </View>
     )
@@ -75,15 +77,18 @@ const ItemOfTheDay = ({ categories }) => {
     <View style={[styles.container, { backgroundColor: theme.surface }]}>
       <View style={styles.header}>
         <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>Item of the Day</Text>
-        <TouchableOpacity onPress={refreshItemOfDay} style={[styles.refreshButton, { backgroundColor: theme.background }]}>
-          <Ionicons name="refresh" size={20} color={COLORS.primary} />
+        <TouchableOpacity
+          onPress={refreshItemOfDay}
+          style={[styles.refreshButton, { backgroundColor: theme.background }]}
+        >
+          <Ionicons name="refresh" size={20} color={theme.primary} />
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.card, { backgroundColor: theme.background }]}>
+      <View style={[styles.card, { backgroundColor: theme.background, borderLeftColor: theme.primary }]}>
         <View style={styles.cardHeader}>
           <Text style={[styles.itemName, { color: theme.textPrimary }]}>{itemOfDay.name}</Text>
-          <View style={styles.categoryBadge}>
+          <View style={[styles.categoryBadge, { backgroundColor: theme.secondary }]}>
             <Text style={styles.categoryText}>{itemOfDay.categoryName}</Text>
           </View>
         </View>
@@ -91,8 +96,8 @@ const ItemOfTheDay = ({ categories }) => {
         {itemOfDay.tags?.length > 0 && (
           <View style={styles.tagsContainer}>
             {itemOfDay.tags.slice(0, 3).map((tag, index) => (
-              <View key={index} style={[styles.tag, { backgroundColor: theme.surface }]}>
-                <Text style={styles.tagText}>{tag}</Text>
+              <View key={index} style={[styles.tag, { backgroundColor: theme.surface, borderColor: theme.border, borderWidth: 1 }]}>
+                <Text style={[styles.tagText, { color: theme.secondary }]}>{tag}</Text>
               </View>
             ))}
           </View>
@@ -117,17 +122,28 @@ export default ItemOfTheDay
 
 const styles = StyleSheet.create({
   container: { padding: 20, marginBottom: 16 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4, marginTop: -12 },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+    marginTop: -12,
+  },
   sectionTitle: { fontSize: 20, fontWeight: 'bold' },
   refreshButton: { padding: 8, borderRadius: 20 },
-  card: { borderRadius: 12, padding: 16, borderLeftWidth: 4, borderLeftColor: COLORS.primary },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 },
+  card: { borderRadius: 12, padding: 16, borderLeftWidth: 4 },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
   itemName: { fontSize: 18, fontWeight: 'bold', flex: 1, marginRight: 12 },
-  categoryBadge: { backgroundColor: COLORS.secondary, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
+  categoryBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
   categoryText: { color: '#fff', fontSize: 12, fontWeight: '500' },
   tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 12 },
   tag: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8, marginRight: 6, marginBottom: 4 },
-  tagText: { color: '#1976d2', fontSize: 12 },
+  tagText: { fontSize: 12, fontWeight: '500' },
   description: { fontSize: 14, lineHeight: 20, marginBottom: 12 },
   cardFooter: { flexDirection: 'row', alignItems: 'center' },
   footerText: { fontSize: 12, marginLeft: 4, fontStyle: 'italic' },

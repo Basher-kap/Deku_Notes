@@ -8,7 +8,6 @@ import CategoryPreview from '../../components/dashboard/CategoryPreview'
 import { useCategories } from '../../hooks/useCategories'
 import { useDashboardStats } from '../../hooks/useDashboardStats'
 import { useThemeContext } from '../../context/ThemeContext'
-import { COLORS } from '../../constants'
 
 const Dashboard = () => {
   const [refreshing, setRefreshing] = useState(false)
@@ -47,8 +46,8 @@ const Dashboard = () => {
         <View style={[styles.section, { backgroundColor: theme.surface }]}>
           <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>Statistics</Text>
           <View style={styles.statsGrid}>
-            <StatisticsCard title="Total Items" value={totalItems} icon="document-text" color={COLORS.primary} />
-            <StatisticsCard title="Categories" value={totalCategories} icon="folder" color={COLORS.secondary} />
+            <StatisticsCard title="Total Items" value={totalItems} icon="document-text" color={theme.primary} />
+            <StatisticsCard title="Categories" value={totalCategories} icon="folder" color={theme.secondary} />
           </View>
         </View>
 

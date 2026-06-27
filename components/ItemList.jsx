@@ -5,15 +5,14 @@ import {
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useThemeContext } from '../context/ThemeContext'
-import { COLORS } from '../constants'
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true)
 }
 
 const TagChip = ({ tag, theme }) => (
-  <View style={[styles.tagChip, { backgroundColor: theme.surface, borderColor: COLORS.secondary }]}>
-    <Text style={styles.tagText}>{tag}</Text>
+  <View style={[styles.tagChip, { backgroundColor: theme.surface, borderColor: theme.secondary }]}>
+    <Text style={[styles.tagText, { color: theme.secondary }]}>{tag}</Text>
   </View>
 )
 
@@ -36,10 +35,16 @@ const ItemRow = ({ item, expanded, onToggle, onEdit, onDelete, theme }) => (
             </Text>
           )}
           <View style={styles.itemActions}>
-            <TouchableOpacity onPress={() => onEdit(item)} style={styles.editBtn}>
+            <TouchableOpacity
+              onPress={() => onEdit(item)}
+              style={[styles.editBtn, { backgroundColor: theme.secondary }]}
+            >
               <Ionicons name="create-outline" size={18} color="#fff" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => onDelete(item.id)} style={styles.deleteBtn}>
+            <TouchableOpacity
+              onPress={() => onDelete(item.id)}
+              style={[styles.deleteBtn, { backgroundColor: theme.danger }]}
+            >
               <Ionicons name="trash-outline" size={18} color="#fff" />
             </TouchableOpacity>
           </View>
@@ -92,9 +97,9 @@ const styles = StyleSheet.create({
   itemDetails: { marginTop: 6 },
   tagsWrapper: { flexDirection: 'row', flexWrap: 'wrap', gap: 4, marginBottom: 6 },
   tagChip: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12, borderWidth: 1 },
-  tagText: { fontSize: 11, color: '#1976d2', fontWeight: '500' },
+  tagText: { fontSize: 11, fontWeight: '500' },
   itemDescription: { fontSize: 14, marginTop: 4 },
   itemActions: { flexDirection: 'row', marginTop: 8, gap: 5, alignSelf: 'flex-end' },
-  editBtn: { backgroundColor: '#4a90e2', padding: 6, borderRadius: 6 },
-  deleteBtn: { backgroundColor: COLORS.danger, padding: 6, borderRadius: 6 },
+  editBtn: { padding: 6, borderRadius: 6 },
+  deleteBtn: { padding: 6, borderRadius: 6 },
 })

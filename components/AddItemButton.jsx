@@ -1,12 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { useThemeContext } from '../context/ThemeContext'
 
 const AddItemButton = ({ onPress, selectedCategory }) => {
+  const { theme } = useThemeContext()
   if (!selectedCategory) return null;
 
   return (
-    <TouchableOpacity style={styles.addItemBtn} onPress={onPress}>
+    <TouchableOpacity style={[styles.addItemBtn, { backgroundColor: theme.primary }]} onPress={onPress}>
       <Ionicons name="add-circle-outline" size={22} color="#fff" />
       <Text style={styles.addItemText}>Add Item</Text>
     </TouchableOpacity>

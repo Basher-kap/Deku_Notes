@@ -9,7 +9,10 @@ const StatisticsCard = ({ title, value, icon, color, subtitle, onPress }) => {
   const CardComponent = onPress ? TouchableOpacity : View
 
   return (
-    <CardComponent style={[styles.card, { backgroundColor: theme.surface, borderLeftColor: color }]} onPress={onPress}>
+    <CardComponent
+      style={[styles.card, { backgroundColor: theme.surface, borderLeftColor: color, borderColor: theme.border }]}
+      onPress={onPress}
+    >
       <View style={styles.cardContent}>
         <View style={styles.cardHeader}>
           <Ionicons name={icon} size={24} color={color} />
@@ -25,7 +28,19 @@ const StatisticsCard = ({ title, value, icon, color, subtitle, onPress }) => {
 export default StatisticsCard
 
 const styles = StyleSheet.create({
-  card: { borderRadius: 12, padding: 16, marginBottom: 12, width: '48%', borderLeftWidth: 4, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2 },
+  card: {
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    width: '48%',
+    borderLeftWidth: 4,
+    borderWidth: 1,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
   cardContent: { flex: 1 },
   cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   cardTitle: { fontSize: 14, marginLeft: 8, fontWeight: '500' },
