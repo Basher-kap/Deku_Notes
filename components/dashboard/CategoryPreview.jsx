@@ -14,13 +14,14 @@ const CategoryPreview = ({ category }) => {
       onPress={() => router.push(`/notes?category=${category.id}`)}
     >
       <View style={styles.titleRow}>
-        <Ionicons name="folder" size={18} color={theme.primary} />
+        <Ionicons
+          name={category.favorite ? 'star' : 'folder'}
+          size={18}
+          color={category.favorite ? '#FFD700' : theme.primary}
+        />
         <Text style={[styles.categoryName, { color: theme.textPrimary }]} numberOfLines={1}>
           {category.name}
         </Text>
-      </View>
-      <View style={[styles.itemCount, { backgroundColor: theme.primary }]}>
-        <Text style={styles.countText}>{category.items.length}</Text>
       </View>
     </TouchableOpacity>
   )

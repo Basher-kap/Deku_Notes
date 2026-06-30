@@ -61,6 +61,7 @@ export const useCategories = () => {
         name: name.trim(),
         items: [],
         sortOrder: 'alphabetical',
+        favorite: false,
         createdAt: now(),
         updatedAt: now(),
       },
@@ -86,6 +87,14 @@ export const useCategories = () => {
     updateCategories(
       categories.map((cat) =>
         cat.id === categoryId ? { ...cat, sortOrder, updatedAt: now() } : cat
+      )
+    )
+  }
+
+  const toggleFavorite = (categoryId) => {
+    updateCategories(
+      categories.map((cat) =>
+        cat.id === categoryId ? { ...cat, favorite: !cat.favorite, updatedAt: now() } : cat
       )
     )
   }
@@ -163,6 +172,7 @@ export const useCategories = () => {
     editItem,
     deleteItem,
     updateCategorySortOrder,
+    toggleFavorite,
     importData,
     clearAllData,
   }

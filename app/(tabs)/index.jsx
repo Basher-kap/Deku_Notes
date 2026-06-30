@@ -53,6 +53,22 @@ const Dashboard = () => {
 
         <ItemOfTheDay categories={categories} />
 
+        {categories.some((c) => c.favorite) && (
+          <View style={[styles.section, { backgroundColor: theme.surface }]}>
+            <View style={styles.favoritesHeader}>
+              <Ionicons name="star" size={18} color="#FFD700" />
+              <Text style={[styles.sectionTitle, { color: theme.textPrimary, marginBottom: 0, marginLeft: 6 }]}>
+                Favorites
+              </Text>
+            </View>
+            <View style={styles.categoriesGrid}>
+              {categories.filter((c) => c.favorite).map((category) => (
+                <CategoryPreview key={category.id} category={category} />
+              ))}
+            </View>
+          </View>
+        )}
+
         <View style={[styles.section, { backgroundColor: theme.surface }]}>
           <Text style={[styles.sectionTitle, { color: theme.textPrimary }]}>Category Previews</Text>
           {categories.length === 0 ? (
@@ -89,6 +105,7 @@ const styles = StyleSheet.create({
   welcomeTitle: { fontSize: 24, fontWeight: 'bold', marginBottom: 4 },
   welcomeSubtitle: { fontSize: 16 },
   sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 16 },
+  favoritesHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
   statsGrid: { flexDirection: 'row', justifyContent: 'space-between' },
   categoriesGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
   emptyState: { alignItems: 'center', padding: 40 },

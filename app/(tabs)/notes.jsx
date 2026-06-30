@@ -29,7 +29,7 @@ const Notes = () => {
     categories, selectedCategory, isLoading,
     setSelectedCategory, addCategory, renameCategory,
     deleteCategory, addItem, editItem, deleteItem,
-    updateCategorySortOrder, importData,
+    updateCategorySortOrder, toggleFavorite, importData,
   } = useCategories()
 
   const { slideAnim, toggleSidebar, closeSidebar } = useSidebar()
@@ -167,6 +167,7 @@ const Notes = () => {
         onDeleteCategory={deleteCategory}
         onRenameCategory={renameCategory}
         onExportImportPress={() => setExportImportModalVisible(true)}
+        onToggleFavorite={toggleFavorite}
         selectedCategory={selectedCategory}
         handleSortChange={handleSortChange}
       />

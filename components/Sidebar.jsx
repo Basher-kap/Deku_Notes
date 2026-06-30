@@ -12,7 +12,8 @@ const Sidebar = ({
   onSelectCategory,
   onDeleteCategory,
   onRenameCategory,
-  onExportImportPress
+  onExportImportPress,
+  onToggleFavorite,
 }) => {
   const [menuVisible, setMenuVisible] = useState(null)
   const [renameModalVisible, setRenameModalVisible] = useState(false)
@@ -104,7 +105,10 @@ const Sidebar = ({
         {/* Category list */}
         <View style={styles.categories}>
           {[...categories]
-            .sort((a, b) => a.name.localeCompare(b.name))
+            .sort((a, b) => {
+              if (!!a.favorite !== !!b.favorite) return a.favorite ? -1 : 1
+              return a.name.localeCompare(b.name)
+            })
             .map((cat, index) => {
               const isMenuOpen = menuVisible === cat.id
               const isLastTwo = index >= categories.length - 2
@@ -119,7 +123,18 @@ const Sidebar = ({
                   ]}
                 >
                   <TouchableOpacity onPress={() => onSelectCategory(cat)} style={styles.categoryTouchable}>
-                    <Text style={[styles.categoryItem, { color: sb.text }]}>📂 {cat.name}</Text>
+                    <Text style={[styles.categoryItem, { color: sb.text }]}>{cat.favorite ? '⭐' : '📂'} {cat.name}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => onToggleFavorite(cat.id)}
+                    style={styles.starButton}
+                  >
+                    <Ionicons
+                      name={cat.favorite ? 'star' : 'star-outline'}
+                      size={18}
+                      color={cat.favorite ? '#FFD700' : sb.textMuted}
+                    />
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -265,6 +280,9 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     padding: 8,
+  },
+  starButton: {
+    padding: 6,
   },
   dropdownMenu: {
     position: 'absolute',

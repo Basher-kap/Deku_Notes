@@ -78,6 +78,7 @@ export const processImportData = (data) =>
     id: cat.id || generateId(),
     name: cat.name,
     sortOrder: cat.sortOrder || 'alphabetical',
+    favorite: cat.favorite || false,
     createdAt: cat.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     items: cat.items.map((item) => ({
