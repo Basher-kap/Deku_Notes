@@ -81,6 +81,38 @@ export const useItemModal = () => {
     }
   }
 
+  const pickFromCamera = async () => {
+    try {
+      const permission = await ImagePicker.requestCameraPermissionsAsync()
+      if (!permission.granted) {
+        alert('Please allow camera access in your device settings.')
+        return
+      }
+
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,   // lets user crop/adjust after taking the photo
+        quality: 0.7,
+      })
+
+      if (result.canceled) return
+
+      const asset = result.assets?.[0]
+      if (!asset) return
+
+      const permanentUri = await saveImagePermanently(asset.uri)
+
+      setForm((prev) => {
+        const combined = [...prev.images, permanentUri]
+        return { ...prev, images: combined.slice(0, 5) }
+      })
+
+    } catch (error) {
+      console.error('Camera error:', error)
+      alert('Something went wrong with the camera. Please try again.')
+    }
+  }
+
   const removeImage = (uri) => {
     setForm((prev) => ({
       ...prev,
@@ -112,6 +144,7 @@ export const useItemModal = () => {
     closeModal,
     openEditModal,
     pickImage, // function to pick images from gallery
+    pickFromCamera, 
     removeImage,
     getItemData,
   }

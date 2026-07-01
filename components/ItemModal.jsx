@@ -9,7 +9,7 @@ import { useThemeContext } from '../context/ThemeContext'
 const ItemModal = ({
   visible, onClose, itemName, setItemName,
   itemTags, setItemTags, itemDesc, setItemDesc,
-  images, onPickImage, onRemoveImage,
+  images, onPickImage, onPickFromCamera, onRemoveImage,
   onSave, editingItem, selectedCategory,
 }) => {
   const { theme } = useThemeContext()
@@ -140,13 +140,23 @@ const ItemModal = ({
                       Images ({safeImages.length}/5)
                     </Text>
                     {safeImages.length < 5 && (
-                      <TouchableOpacity
-                        style={[styles.addImageBtn, { backgroundColor: theme.secondary }]}
-                        onPress={onPickImage}
-                      >
-                        <Ionicons name="image-outline" size={16} color="#fff" />
-                        <Text style={styles.addImageText}>Add from Gallery</Text>
-                      </TouchableOpacity>
+                      <View style={styles.imageBtnsRow}>
+                        <TouchableOpacity
+                          style={[styles.addImageBtn, { backgroundColor: theme.secondary }]}
+                          onPress={onPickImage}
+                        >
+                          <Ionicons name="image-outline" size={16} color="#fff" />
+                          <Text style={styles.addImageText}>Gallery</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          style={[styles.addImageBtn, { backgroundColor: theme.accent }]}
+                          onPress={onPickFromCamera}
+                        >
+                          <Ionicons name="camera-outline" size={16} color="#fff" />
+                          <Text style={styles.addImageText}>Camera</Text>
+                        </TouchableOpacity>
+                      </View>
                     )}
                   </View>
 
@@ -243,6 +253,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
+  },
+  imageBtnsRow: {
+    flexDirection: 'row',
+    gap: 6,
   },
   imagesLabel: { fontSize: 13, fontWeight: '500' },
   addImageBtn: {

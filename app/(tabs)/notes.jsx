@@ -37,7 +37,7 @@ const Notes = () => {
   const {
     modalVisible, itemName, setItemName,
     itemTags, setItemTags, itemDesc, setItemDesc, images, setImages,
-    editingItem, openModal, closeModal, openEditModal, pickImage, removeImage, getItemData,
+    editingItem, openModal, closeModal, openEditModal, pickImage, pickFromCamera, removeImage, getItemData,
   } = useItemModal()
 
   const [selectedTag, setSelectedTag] = useState(null)
@@ -185,6 +185,7 @@ const Notes = () => {
         editingItem={editingItem}
         selectedCategory={selectedCategory}
         onPickImage={pickImage}
+        onPickFromCamera={pickFromCamera}
         onRemoveImage={removeImage}
         images={images}
         setImages={setImages}
