@@ -127,17 +127,6 @@ const Sidebar = ({
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    onPress={() => onToggleFavorite(cat.id)}
-                    style={styles.starButton}
-                  >
-                    <Ionicons
-                      name={cat.favorite ? 'star' : 'star-outline'}
-                      size={18}
-                      color={cat.favorite ? '#FFD700' : sb.textMuted}
-                    />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
                     onPress={() => setMenuVisible(isMenuOpen ? null : cat.id)}
                     style={styles.menuButton}
                   >
@@ -150,11 +139,34 @@ const Sidebar = ({
                       { backgroundColor: sb.dropdownBg, borderColor: sb.dropdownBorder },
                       isLastTwo && styles.dropdownMenuBottom,
                     ]}>
-                      <TouchableOpacity style={styles.menuItem} onPress={() => handleRenamePress(cat)}>
-                        <Ionicons name="create-outline" size={18} color={theme.primary} />
+                      {/* Favorite toggle */}
+                      <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={() => {
+                          onToggleFavorite(cat.id)
+                          setMenuVisible(null)
+                        }}
+                      >
+                        <Ionicons
+                          name={cat.favorite ? 'star' : 'star-outline'}
+                          size={18}
+                          color="#FFD700"
+                        />
+                        <Text style={[styles.menuItemText, { color: sb.text }]}>
+                          {cat.favorite ? 'Unfavorite' : 'Favorite'}
+                        </Text>
+                      </TouchableOpacity>
+
+                      {/* Rename */}
+                      <TouchableOpacity
+                        style={[styles.menuItem, { borderTopColor: sb.dropdownBorder, borderTopWidth: 1 }]}
+                        onPress={() => handleRenamePress(cat)}
+                      >
+                        <Ionicons name="create-outline" size={18} color="#4CAF50" />
                         <Text style={[styles.menuItemText, { color: sb.text }]}>Rename</Text>
                       </TouchableOpacity>
 
+                      {/* Delete */}
                       <TouchableOpacity
                         style={[styles.menuItem, { borderTopColor: sb.dropdownBorder, borderTopWidth: 1 }]}
                         onPress={() => handleDeletePress(cat)}
@@ -280,9 +292,6 @@ const styles = StyleSheet.create({
   },
   menuButton: {
     padding: 8,
-  },
-  starButton: {
-    padding: 6,
   },
   dropdownMenu: {
     position: 'absolute',
