@@ -36,13 +36,13 @@ const ItemRow = ({ item, expanded, onToggle, onEdit, onDelete, theme }) => (
           )}
 
           {item.images?.length > 0 && (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageRow}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageRow}   contentContainerStyle={{ alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
               {item.images.map((uri, i) => (
                 <Image
                   key={i}
                   source={{ uri }}
                   style={styles.itemImage}
-                  resizeMode="cover"
+                  resizeMode="contain"
                 />
               ))}
             </ScrollView>
@@ -114,11 +114,11 @@ const styles = StyleSheet.create({
   tagText: { fontSize: 11, fontWeight: '500' },
   itemDescription: { fontSize: 14, marginTop: 4 },
   itemActions: { flexDirection: 'row', marginTop: 8, gap: 5, alignSelf: 'flex-end' },
-  imageRow: { marginTop: 8, marginBottom: 4 },
+  imageRow: { marginTop: 8, marginBottom: 4  },
   itemImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
+    width: 150,
+    height: 150,
+    borderRadius: 10,
     marginRight: 6,
   },
   editBtn: { padding: 6, borderRadius: 6 },

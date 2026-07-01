@@ -161,7 +161,6 @@ const ItemModal = ({
                           <Image
                             source={{ uri }}
                             style={styles.thumbnail}
-                            resizeMode="cover"
                             onError={(e) => console.log('image load error:', e.nativeEvent.error, uri)}
                           />
                           <TouchableOpacity
@@ -258,19 +257,21 @@ const styles = StyleSheet.create({
   thumbnailsRow: { flexDirection: 'row' },
   thumbnailWrapper: { position: 'relative', marginRight: 8 },
   thumbnail: {
-    width: 72,
-    height: 72,
-    borderRadius: 8,
+    width: 260,
+    height: 200,
+    borderRadius: 10,
+    resizeMode: 'contain',
   },
   removeImageBtn: {
     position: 'absolute',
-    top: -6,
-    right: -6,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    top: 6,
+    right: 6,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.55)',
   },
   // Actions
   modalActions: {
