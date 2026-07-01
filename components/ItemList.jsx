@@ -1,6 +1,6 @@
 import {
   StyleSheet, Text, View, TouchableOpacity, FlatList,
-  LayoutAnimation, Platform, UIManager
+  LayoutAnimation, Platform, UIManager, Image, ScrollView
 } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
@@ -34,6 +34,20 @@ const ItemRow = ({ item, expanded, onToggle, onEdit, onDelete, theme }) => (
               {item.description}
             </Text>
           )}
+
+          {item.images?.length > 0 && (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imageRow}>
+              {item.images.map((uri, i) => (
+                <Image
+                  key={i}
+                  source={{ uri }}
+                  style={styles.itemImage}
+                  resizeMode="cover"
+                />
+              ))}
+            </ScrollView>
+          )}
+
           <View style={styles.itemActions}>
             <TouchableOpacity
               onPress={() => onEdit(item)}
@@ -100,6 +114,13 @@ const styles = StyleSheet.create({
   tagText: { fontSize: 11, fontWeight: '500' },
   itemDescription: { fontSize: 14, marginTop: 4 },
   itemActions: { flexDirection: 'row', marginTop: 8, gap: 5, alignSelf: 'flex-end' },
+  imageRow: { marginTop: 8, marginBottom: 4 },
+  itemImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    marginRight: 6,
+  },
   editBtn: { padding: 6, borderRadius: 6 },
   deleteBtn: { padding: 6, borderRadius: 6 },
 })

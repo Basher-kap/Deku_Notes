@@ -86,6 +86,7 @@ export const processImportData = (data) =>
       name: item.name,
       tags: Array.isArray(item.tags) ? item.tags : [],
       description: item.description || '',
+      images: Array.isArray(item.images) ? item.images : [],
       createdAt: item.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     })),

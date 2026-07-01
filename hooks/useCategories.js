@@ -103,7 +103,7 @@ export const useCategories = () => {
 
   const addItem = (item) => {
     if (!selectedCategory || !item.name.trim()) return
-    const newItem = { ...item, id: generateId(), createdAt: now(), updatedAt: now() }
+    const newItem = { ...item, id: generateId(), images: item.images || [], createdAt: now(), updatedAt: now() }
     updateCategories(
       categories.map((cat) =>
         cat.id === selectedCategory.id

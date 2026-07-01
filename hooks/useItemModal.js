@@ -1,7 +1,8 @@
-// hooks/useItemModal.js
 import { useState } from 'react'
+import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system/legacy'
 
-const EMPTY_FORM = { itemName: '', itemTags: '', itemDesc: '' }
+const EMPTY_FORM = { itemName: '', itemTags: '', itemDesc: '', images: [] } //added new field for images
 
 export const useItemModal = () => {
   const [modalVisible, setModalVisible] = useState(false)
@@ -20,13 +21,71 @@ export const useItemModal = () => {
   }
 
   const openEditModal = (item) => {
+    console.log('item.images on edit:', item.images)
     setForm({
       itemName: item.name,
       itemTags: item.tags.join(', '),
       itemDesc: item.description,
+      images: item.images || [], // populate images if they exist
     })
     setEditingItem(item)
     setModalVisible(true)
+  }
+
+  // Copy picked image to permanent app storage so URI persists across restarts
+  const saveImagePermanently = async (tempUri) => {
+    const fileName = `deku_img_${Date.now()}.jpg`
+    const destUri = FileSystem.documentDirectory + fileName
+    console.log('copying image to:', destUri)
+    await FileSystem.copyAsync({ from: tempUri, to: destUri })
+    console.log('image saved successfully')
+    return destUri
+  }
+
+  const pickImage = async () => {
+    console.log('pickImage called')
+    try {
+      // Request permission
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      if (!permission.granted) {
+        alert('Please allow access to your gallery in your device settings.')
+        return
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],      // replaces deprecated MediaTypeOptions.Images
+        allowsMultipleSelection: true,
+        allowsEditing: false,
+        quality: 0.7,
+        selectionLimit: 5,
+        orderedSelection: true,
+      })
+
+      if (result.canceled) return
+
+      const assets = result.assets || []
+      if (assets.length === 0) return
+
+      const permanentUris = await Promise.all(
+        assets.map((asset) => saveImagePermanently(asset.uri))
+      )
+
+      setForm((prev) => {
+        const combined = [...prev.images, ...permanentUris]
+        return { ...prev, images: combined.slice(0, 5) }
+      })
+
+    } catch (error) {
+      console.error('Image picker error:', error)
+      alert('Something went wrong while picking images. Please try again.')
+    }
+  }
+
+  const removeImage = (uri) => {
+    setForm((prev) => ({
+      ...prev,
+      images: prev.images.filter((img) => img !== uri),
+    }))
   }
 
   const getItemData = () => ({
@@ -36,6 +95,7 @@ export const useItemModal = () => {
       .map((t) => t.trim())
       .filter(Boolean),
     description: form.itemDesc,
+    images: form.images, // include images in the returned data
   })
 
   return {
@@ -46,10 +106,13 @@ export const useItemModal = () => {
     setItemTags: setField('itemTags'),
     itemDesc: form.itemDesc,
     setItemDesc: setField('itemDesc'),
+    images: form.images, // expose images for display in the modal
     editingItem,
     openModal,
     closeModal,
     openEditModal,
+    pickImage, // function to pick images from gallery
+    removeImage,
     getItemData,
   }
 }

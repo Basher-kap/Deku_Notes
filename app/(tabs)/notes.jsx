@@ -36,8 +36,8 @@ const Notes = () => {
 
   const {
     modalVisible, itemName, setItemName,
-    itemTags, setItemTags, itemDesc, setItemDesc,
-    editingItem, openModal, closeModal, openEditModal, getItemData,
+    itemTags, setItemTags, itemDesc, setItemDesc, images, setImages,
+    editingItem, openModal, closeModal, openEditModal, pickImage, removeImage, getItemData,
   } = useItemModal()
 
   const [selectedTag, setSelectedTag] = useState(null)
@@ -184,6 +184,10 @@ const Notes = () => {
         onSave={handleSaveItem}
         editingItem={editingItem}
         selectedCategory={selectedCategory}
+        onPickImage={pickImage}
+        onRemoveImage={removeImage}
+        images={images}
+        setImages={setImages}
       />
 
       <ExportImportModal
