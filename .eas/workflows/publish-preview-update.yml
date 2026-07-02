@@ -1,0 +1,12 @@
+name: Publish Preview Update
+
+# on:
+#   push:
+#     branches: ['*', '!main']
+
+jobs:
+  publish_preview_update:
+    type: update
+    environment: preview
+    params:
+      channel: preview
