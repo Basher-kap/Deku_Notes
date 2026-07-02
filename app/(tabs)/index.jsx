@@ -2,12 +2,9 @@
 import { StyleSheet, View, Text, ScrollView, RefreshControl } from 'react-native'
 import React, { useState, useCallback } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import StatisticsCard from '../../components/dashboard/StatisticsCard'
-import ItemOfTheDay from '../../components/dashboard/ItemOfTheDay'
-import CategoryPreview from '../../components/dashboard/CategoryPreview'
-import { useCategories } from '../../hooks/useCategories'
-import { useDashboardStats } from '../../hooks/useDashboardStats'
-import { useThemeContext } from '../../context/ThemeContext'
+import { StatisticsCard, ItemOfTheDay, CategoryPreview } from '../../components'
+import { useCategories, useDashboardStats } from '../../hooks'
+import { useThemeContext } from '../../context'
 
 const Dashboard = () => {
   const [refreshing, setRefreshing] = useState(false)

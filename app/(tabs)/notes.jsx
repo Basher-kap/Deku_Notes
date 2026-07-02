@@ -3,22 +3,14 @@ import { StyleSheet, View, Text, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { useLocalSearchParams } from 'expo-router'
-import Sidebar from '../../components/Sidebar'
-import AddItemButton from '../../components/AddItemButton'
-import ItemList from '../../components/ItemList'
-import ItemModal from '../../components/ItemModal'
-import SearchBar from '../../components/SearchBar'
-import SortButton from '../../components/SortButton'
-import TagsDropdown from '../../components/TagsDropdown'
-import ExportImportModal from '../../components/ExportImportModal'
-import FlashcardModal from '../../components/FlashcardModal'
-import FlashcardButton from '../../components/FlashcardButton'
-import { useCategories } from '../../hooks/useCategories'
-import { useSidebar } from '../../hooks/useSidebar'
-import { useItemModal } from '../../hooks/useItemModal'
-import { useSearch } from '../../hooks/useSearch'
-import { useThemeContext } from '../../context/ThemeContext'
-import { exportData, processImportData, validateImportData } from '../../utils/dataManager'
+
+import {
+  Sidebar, AddItemButton, ItemList, ItemModal, SearchBar,
+  SortButton, TagsDropdown, ExportImportModal, FlashcardModal, FlashcardButton,
+} from '../../components'
+import { useCategories, useSidebar, useItemModal, useSearch } from '../../hooks'
+import { useThemeContext } from '../../context'
+import { exportData, processImportData, validateImportData } from '../../utils'
 
 const Notes = () => {
   const navigation = useNavigation()

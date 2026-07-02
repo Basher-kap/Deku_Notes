@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ITEM_OF_DAY_KEY } from '../../constants'
-import { useThemeContext } from '../../context/ThemeContext'
+import { useThemeContext } from '../../context'
 
 const getAllItems = (categories) =>
   categories.flatMap((cat) => cat.items.map((item) => ({ ...item, categoryName: cat.name })))

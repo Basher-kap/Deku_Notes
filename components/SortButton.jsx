@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { SORT_OPTIONS, COLORS } from '../constants'
-import { useThemeContext } from '../context/ThemeContext'
+import { useThemeContext } from '../context'
   
 const SortButton = ({ sortOrder, onSortChange, selectedCategory }) => {
   const { theme } = useThemeContext()

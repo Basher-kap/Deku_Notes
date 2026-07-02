@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useThemeContext } from '../context/ThemeContext'
+import { useThemeContext } from '../context'
 
 const FlashcardButton = ({ onPress, selectedCategory }) => {
   const { theme } = useThemeContext()

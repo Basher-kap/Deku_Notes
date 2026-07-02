@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Animated, Alert, ScrollView, Modal, KeyboardAvoidingView, Platform, Switch } from 'react-native'
 import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useThemeContext } from '../context/ThemeContext'
+import { useThemeContext } from '../context'
 
 const Sidebar = ({
   slideAnim,
