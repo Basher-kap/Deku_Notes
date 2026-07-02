@@ -4,19 +4,64 @@
     "appVersionSource": "remote"
   },
   "build": {
+    "base": {
+      "node": "20.18.0"
+    },
     "development": {
+      "extends": "base",
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development",
+      "environment": "development",
+      "env": { 
+        "APP_VARIANT": "development" 
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "extends": "base",
+      "distribution": "internal",
+      "channel": "preview",
+      "environment": "preview",
+      "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+      },
+      "env": { 
+        "APP_VARIANT": "preview" 
+      }
     },
     "production": {
+      "extends": "base",
+      "distribution": "store",
+      "channel": "production",
+      "environment": "production",
       "autoIncrement": true,
-      "channel": "production"
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": { 
+        "APP_VARIANT": "production" 
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "internal"
+      },
+      "ios": {
+        "ascApiKeyPath": "./asc-api-key.p8",
+        "ascApiKeyId": "YOUR_KEY_ID",
+        "ascApiKeyIssuerId": "YOUR_ISSUER_ID",
+        "appleTeamId": "YOUR_TEAM_ID"
+      }
+    }
   }
 }
